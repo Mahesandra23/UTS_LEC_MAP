@@ -7,34 +7,32 @@
     android:padding="16dp">
 
     <EditText
-        android:id="@+id/et_email_signup"
+        android:id="@+id/et_email_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
-        android:inputType="textEmailAddress"
         android:padding="12dp"/>
 
     <EditText
-        android:id="@+id/et_password_signup"
+        android:id="@+id/et_password_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password"
         android:inputType="textPassword"
         android:padding="12dp"/>
 
-    <EditText
-        android:id="@+id/et_confirm_password_signup"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Confirm Password"
-        android:inputType="textPassword"
+        android:text="Login"
         android:padding="12dp"/>
 
-    <Button
-        android:id="@+id/btn_signup"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/tv_sign_up"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign Up"
+        android:text="Don't have an account? Sign Up"
         android:padding="12dp"/>
 
 </LinearLayout>
