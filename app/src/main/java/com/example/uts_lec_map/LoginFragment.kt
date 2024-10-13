@@ -10,22 +10,19 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import androidx.core.content.res.ResourcesCompat
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [LoginFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class LoginFragment : Fragment() {
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
+        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_login, container, false)
+
+        // Set up the title with Montserrat Bold font
+        val loginTitle: TextView = view.findViewById(R.id.tv_login_title)
+        loginTitle.typeface = ResourcesCompat.getFont(requireContext(), R.font.montserrat_bold)
 
         val signUpTextView = view.findViewById<TextView>(R.id.tv_sign_up)
         signUpTextView.setOnClickListener {

@@ -4,13 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/tv_login_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/montserrat_bold"
+        android:layout_marginBottom="20dp" />
 
     <EditText
         android:id="@+id/et_email_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
+        android:fontFamily="@font/montserrat_regular"
         android:padding="12dp"/>
 
     <EditText
@@ -19,6 +31,7 @@
         android:layout_height="wrap_content"
         android:hint="Password"
         android:inputType="textPassword"
+        android:fontFamily="@font/montserrat_regular"
         android:padding="12dp"/>
 
     <Button
@@ -26,6 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Login"
+        android:fontFamily="@font/montserrat_semibold"
         android:padding="12dp"/>
 
     <TextView
@@ -33,6 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Don't have an account? Sign Up"
-        android:padding="12dp"/>
+        android:fontFamily="@font/montserrat_regular"
+        android:padding="16dp"/>
 
 </LinearLayout>
