@@ -1,5 +1,6 @@
 package com.example.uts_lec_map
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,15 +39,22 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.home -> {
-                    // Handle home click
+                    // Navigate to Home (MainActivity)
                     true
                 }
                 R.id.search -> {
-                    // Handle search click
+                    // Navigate to SearchPage
+                    val intent = Intent(this, SearchPage::class.java)
+                    startActivity(intent)
+                    finish() // Optional: finish MainActivity if you want to prevent going back to it
+                    true
+                }
+                R.id.history -> {
+                    // Navigate to History
                     true
                 }
                 R.id.profile -> {
-                    // Handle profile click
+                    // Navigate to Profile
                     true
                 }
                 else -> false
