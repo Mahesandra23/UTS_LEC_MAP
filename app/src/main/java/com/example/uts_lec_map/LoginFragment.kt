@@ -37,6 +37,7 @@ class LoginFragment : Fragment() {
             if (email.isNotEmpty() && password.isNotEmpty()) {
                 // Lakukan validasi login
                 Toast.makeText(activity, "Login successful", Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
             } else {
                 Toast.makeText(activity, "Please fill out all fields", Toast.LENGTH_SHORT).show()
             }
