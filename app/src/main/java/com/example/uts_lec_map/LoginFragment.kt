@@ -101,6 +101,7 @@ class LoginFragment : Fragment() {
                 if (isEmailValid(email)) {
                     // Proses login (contoh sederhana)
                     Toast.makeText(activity, "Login successful", Toast.LENGTH_SHORT).show()
+                    findNavController().navigate(R.id.action_loginFragment_to_detailBookFragment)
                 } else {
                     showFillAllFieldsWarning()
                 }

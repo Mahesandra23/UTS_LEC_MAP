@@ -12,6 +12,10 @@
         <action
             android:id="@+id/action_loginFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
+        <!-- Action menuju DetailBookFragment -->
+        <action
+            android:id="@+id/action_loginFragment_to_detailBookFragment"
+            app:destination="@id/detailBookFragment" />
     </fragment>
 
     <fragment
@@ -23,5 +27,11 @@
             android:id="@+id/action_signUpFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
-</navigation>
 
+    <!-- Tambahkan DetailBookFragment -->
+    <fragment
+        android:id="@+id/detailBookFragment"
+        android:name="com.example.uts_lec_map.DetailBookFragment"
+        android:label="Detail Book"
+        tools:layout="@layout/fragment_detail_book" />
+</navigation>
