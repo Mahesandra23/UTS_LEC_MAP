@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.uts_lec_map.adapters.BookAdapter
 import com.example.uts_lec_map.databinding.FragmentSearchBinding
 import com.example.uts_lec_map.models.Book
+import com.google.firebase.database.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class SearchFragment : Fragment() {
@@ -17,7 +18,8 @@ class SearchFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var bookAdapter: BookAdapter
-    private var bookList: List<Book> = listOf()
+    private var bookList: MutableList<Book> = mutableListOf()
+    private lateinit var bookDatabase: DatabaseReference
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,20 +27,22 @@ class SearchFragment : Fragment() {
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
+        // Inisialisasi Firebase Database
+        bookDatabase = FirebaseDatabase.getInstance().getReference("buku")
+
         setupRecyclerView()    // Setup RecyclerView
         setupBottomNavigation() // Setup Bottom Navigation
         setupSearchFunctionality() // Setup Search Functionality
+
+        // Ambil data dari Firebase
+        getBooksFromFirebase()
 
         return binding.root
     }
 
     // Setup RecyclerView with BookAdapter
     private fun setupRecyclerView() {
-        bookList = getAllBooks() // Initialize book list
-        bookAdapter = BookAdapter(requireContext(), bookList) { book ->
-            // Handle click and navigate to detail book fragment
-            findNavController().navigate(R.id.action_searchFragment_to_detailBookFragment)
-        }
+        bookAdapter = BookAdapter(requireContext(), bookList) // Inisialisasi BookAdapter dengan list kosong
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = bookAdapter
     }
@@ -91,19 +95,31 @@ class SearchFragment : Fragment() {
             bookList // Show all books if query is empty
         } else {
             bookList.filter { book ->
-                book.title.contains(query, ignoreCase = true)
+                book.judul.contains(query, ignoreCase = true) // Memfilter berdasarkan judul
             }
         }
-        bookAdapter.updateBooks(filteredBooks) // Update adapter with filtered list
+        bookAdapter = BookAdapter(requireContext(), filteredBooks) // Buat adapter baru dengan daftar yang difilter
+        binding.recyclerView.adapter = bookAdapter // Set adapter baru ke RecyclerView
     }
 
-    // Get all books (you can replace this with actual data source)
-    private fun getAllBooks(): List<Book> {
-        return listOf(
-            Book("Solo Leveling", android.R.drawable.ic_menu_gallery),
-            Book("Harry Potter", android.R.drawable.ic_menu_camera),
-            Book("Bukan Aku yang Dia Inginkan", android.R.drawable.ic_menu_gallery)
-        )
+    // Get all books from Firebase
+    private fun getBooksFromFirebase() {
+        bookDatabase.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                bookList.clear() // Kosongkan list sebelum menambahkan data baru
+                for (bookSnapshot in snapshot.children) {
+                    val book = bookSnapshot.getValue(Book::class.java)
+                    if (book != null) {
+                        bookList.add(book) // Menambahkan buku ke list
+                    }
+                }
+                bookAdapter.notifyDataSetChanged() // Beri tahu adapter bahwa data telah diperbarui
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Tampilkan pesan error
+            }
+        })
     }
 
     // Clean up binding when view is destroyed
