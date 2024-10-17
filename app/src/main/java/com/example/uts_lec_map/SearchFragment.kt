@@ -19,33 +19,31 @@ class SearchFragment : Fragment() {
     private lateinit var bookAdapter: BookAdapter
     private var bookList: List<Book> = listOf()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            // Mengambil argumen jika diperlukan
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
-        setupRecyclerView()
-        setupSearchFunctionality()
+        setupRecyclerView()    // Setup RecyclerView
+        setupBottomNavigation() // Setup Bottom Navigation
+        setupSearchFunctionality() // Setup Search Functionality
 
         return binding.root
     }
 
+    // Setup RecyclerView with BookAdapter
     private fun setupRecyclerView() {
+        bookList = getAllBooks() // Initialize book list
         bookAdapter = BookAdapter(requireContext(), bookList)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = bookAdapter
     }
 
+    // Setup Bottom Navigation to navigate between fragments
     private fun setupBottomNavigation() {
-        val bottomNavigationView = binding.root.findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        val bottomNavigationView = binding.bottomNavigation
+        bottomNavigationView.selectedItemId = R.id.search // Mark Search as selected
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.home -> {
@@ -53,15 +51,15 @@ class SearchFragment : Fragment() {
                     true
                 }
                 R.id.search -> {
-                    // uda di sini
+                    // Already in SearchFragment
                     true
                 }
                 R.id.history -> {
-                    // Navigate to History
+                    findNavController().navigate(R.id.action_searchFragment_to_historyFragment)
                     true
                 }
                 R.id.profile -> {
-                    // Navigate to Profile
+                    findNavController().navigate(R.id.action_searchFragment_to_profileFragment)
                     true
                 }
                 else -> false
@@ -69,6 +67,7 @@ class SearchFragment : Fragment() {
         }
     }
 
+    // Setup search functionality with SearchView
     private fun setupSearchFunctionality() {
         binding.searchBar.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -83,17 +82,19 @@ class SearchFragment : Fragment() {
         })
     }
 
+    // Perform search and filter the book list based on the query
     private fun performSearch(query: String?) {
         val filteredBooks = if (query.isNullOrEmpty()) {
-            getAllBooks()
+            bookList // Show all books if query is empty
         } else {
-            getAllBooks().filter { book ->
+            bookList.filter { book ->
                 book.title.contains(query, ignoreCase = true)
             }
         }
-        bookAdapter.updateBooks(filteredBooks)
+        bookAdapter.updateBooks(filteredBooks) // Update adapter with filtered list
     }
 
+    // Get all books (you can replace this with actual data source)
     private fun getAllBooks(): List<Book> {
         return listOf(
             Book("Solo Leveling", android.R.drawable.ic_menu_gallery),
@@ -102,18 +103,9 @@ class SearchFragment : Fragment() {
         )
     }
 
+    // Clean up binding when view is destroyed
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object {
-        fun newInstance(param1: String, param2: String) =
-            SearchFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }
