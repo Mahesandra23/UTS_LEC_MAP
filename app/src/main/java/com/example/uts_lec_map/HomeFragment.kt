@@ -39,8 +39,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupRecyclerViews() {
-        // Set RecyclerView untuk trending books
-        val trendingBooks = getTrendingBooks()
+        // Set RecyclerView for trending books
+        val trendingBooks: MutableList<Book> = getTrendingBooks().toMutableList() // Convert to MutableList
         binding.trendingRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         val trendingAdapter = BookAdapter(requireContext(), trendingBooks) { book ->
             // Navigate to detail book page when a trending book is clicked
@@ -48,8 +48,8 @@ class HomeFragment : Fragment() {
         }
         binding.trendingRecyclerView.adapter = trendingAdapter
 
-        // Set RecyclerView untuk preference books
-        val preferenceBooks = getPreferenceBooks()
+        // Set RecyclerView for preference books
+        val preferenceBooks: MutableList<Book> = getPreferenceBooks().toMutableList() // Convert to MutableList
         binding.preferencesRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         val preferenceAdapter = BookAdapter(requireContext(), preferenceBooks) { book ->
             // Navigate to detail book page when a preference book is clicked
@@ -57,6 +57,7 @@ class HomeFragment : Fragment() {
         }
         binding.preferencesRecyclerView.adapter = preferenceAdapter
     }
+
 
     private fun setupBottomNavigation() {
         val bottomNavigationView = binding.bottomNavigation

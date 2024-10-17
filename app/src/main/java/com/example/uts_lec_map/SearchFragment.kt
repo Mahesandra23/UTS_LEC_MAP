@@ -17,7 +17,7 @@ class SearchFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var bookAdapter: BookAdapter
-    private var bookList: List<Book> = listOf()
+    private var bookList: MutableList<Book> = mutableListOf() // Changed to MutableList
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,7 +34,7 @@ class SearchFragment : Fragment() {
 
     // Setup RecyclerView with BookAdapter
     private fun setupRecyclerView() {
-        bookList = getAllBooks() // Initialize book list
+        bookList = getAllBooks().toMutableList() // Convert to MutableList
         bookAdapter = BookAdapter(requireContext(), bookList) { book ->
             // Handle click and navigate to detail book fragment
             findNavController().navigate(R.id.action_searchFragment_to_detailBookFragment)
@@ -92,7 +92,7 @@ class SearchFragment : Fragment() {
         } else {
             bookList.filter { book ->
                 book.title.contains(query, ignoreCase = true)
-            }
+            }.toMutableList() // Convert the filtered result to MutableList
         }
         bookAdapter.updateBooks(filteredBooks) // Update adapter with filtered list
     }

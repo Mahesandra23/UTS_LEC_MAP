@@ -12,7 +12,7 @@ import com.example.uts_lec_map.models.Book
 
 class BookAdapter(
     private val context: Context,
-    private val bookList: List<Book>,
+    private var bookList: MutableList<Book>, // Change to MutableList
     private val onBookClickListener: (Book) -> Unit
 ) : RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
 
@@ -37,7 +37,9 @@ class BookAdapter(
     }
 
     fun updateBooks(filteredBooks: List<Book>) {
-        // You can implement this to update the book list dynamically
+        bookList.clear() // Clear the current list of books
+        bookList.addAll(filteredBooks) // Add the new filtered books
+        notifyDataSetChanged() // Notify the adapter that the data has changed
     }
 
     class BookViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
