@@ -35,7 +35,10 @@ class SearchFragment : Fragment() {
     // Setup RecyclerView with BookAdapter
     private fun setupRecyclerView() {
         bookList = getAllBooks() // Initialize book list
-        bookAdapter = BookAdapter(requireContext(), bookList)
+        bookAdapter = BookAdapter(requireContext(), bookList) { book ->
+            // Handle click and navigate to detail book fragment
+            findNavController().navigate(R.id.action_searchFragment_to_detailBookFragment)
+        }
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = bookAdapter
     }

@@ -42,22 +42,29 @@ class HomeFragment : Fragment() {
         // Set RecyclerView untuk trending books
         val trendingBooks = getTrendingBooks()
         binding.trendingRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.trendingRecyclerView.adapter = BookAdapter(requireContext(), trendingBooks)
+        val trendingAdapter = BookAdapter(requireContext(), trendingBooks) { book ->
+            // Navigate to detail book page when a trending book is clicked
+            findNavController().navigate(R.id.action_homeFragment_to_detailBookFragment)
+        }
+        binding.trendingRecyclerView.adapter = trendingAdapter
 
-        // Set RecyclerView untuk books berdasarkan preferensi
+        // Set RecyclerView untuk preference books
         val preferenceBooks = getPreferenceBooks()
         binding.preferencesRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.preferencesRecyclerView.adapter = BookAdapter(requireContext(), preferenceBooks)
+        val preferenceAdapter = BookAdapter(requireContext(), preferenceBooks) { book ->
+            // Navigate to detail book page when a preference book is clicked
+            findNavController().navigate(R.id.action_homeFragment_to_detailBookFragment)
+        }
+        binding.preferencesRecyclerView.adapter = preferenceAdapter
     }
 
     private fun setupBottomNavigation() {
         val bottomNavigationView = binding.bottomNavigation
-        bottomNavigationView.selectedItemId = R.id.home
+        bottomNavigationView.selectedItemId = R.id.home // Mark Search as selected
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
-
             when (item.itemId) {
                 R.id.home -> {
-                    // Already in HomeFragment
+                    // Navigate to Home
                     true
                 }
                 R.id.search -> {

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     app:startDestination="@id/loginFragment">
 
-    <!-- Login Fragment -->
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.uts_lec_map.LoginFragment"
@@ -13,8 +12,9 @@
         <action
             android:id="@+id/action_loginFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
-        <action
-            android:id="@+id/action_loginFragment_to_homeFragment"
+        <!-- Action menuju home frament -->
+         <action
+             android:id="@+id/action_loginFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
     </fragment>
 
@@ -47,6 +47,9 @@
         <action
             android:id="@+id/action_homeFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_detailBookFragment"
+            app:destination="@id/detailBookFragment" />
     </fragment>
 
     <!-- Search Fragment -->
@@ -64,6 +67,9 @@
         <action
             android:id="@+id/action_searchFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_detailBookFragment"
+            app:destination="@id/detailBookFragment" />
     </fragment>
 
     <!-- History Fragment -->
@@ -100,4 +106,11 @@
             app:destination="@id/historyFragment" />
     </fragment>
 
+    <!-- Tambahkan DetailBookFragment -->
+    <fragment
+        android:id="@+id/detailBookFragment"
+        android:name="com.example.uts_lec_map.DetailBookFragment"
+        android:label="Detail Book"
+        tools:layout="@layout/fragment_detail_book" />
 </navigation>
+
