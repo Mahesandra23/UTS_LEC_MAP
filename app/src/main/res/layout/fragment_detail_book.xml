@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="20dp"
             app:cardElevation="4dp"
-            android:layout_marginTop="440dp"
+            android:layout_marginTop="437dp"
             android:translationY="50dp"> <!-- Menggunakan translationY untuk melewati layar -->
 
             <LinearLayout
@@ -78,6 +78,17 @@
                     android:layout_marginTop="10dp">
 
                     <TextView
+                        android:id="@+id/tv_writter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="By:"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:layout_marginTop="4dp"
+                        android:paddingStart="8dp" />
+
+                    <TextView
                         android:id="@+id/tv_synopsis_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -103,16 +114,6 @@
                             android:paddingStart="8dp"
                             android:paddingEnd="8dp" />
                     </ScrollView>
-                    <TextView
-                        android:id="@+id/tv_writter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="By:"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        android:layout_marginTop="4dp"
-                        android:paddingStart="8dp" />
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>

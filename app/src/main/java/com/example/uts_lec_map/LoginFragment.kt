@@ -31,6 +31,9 @@ class LoginFragment : Fragment() {
         val fullText = "Don't have an account? Sign Up"
         val spannableString = SpannableString(fullText)
 
+        // Mengatur teks ke TextView
+        signUpTextView.text = spannableString
+
         // Menentukan posisi dari "Sign Up"
         val start = fullText.indexOf("Sign Up")
         val end = start + "Sign Up".length
@@ -42,9 +45,6 @@ class LoginFragment : Fragment() {
             end,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
-
-        // Mengatur teks ke TextView
-        signUpTextView.text = spannableString
 
         // Fungsi untuk mengecek apakah ada field yang kosong
         fun isAnyFieldEmpty(): Boolean {
@@ -88,22 +88,32 @@ class LoginFragment : Fragment() {
             }
         })
 
+        // Validasi password (jika ingin ditambahkan)
+        passwordEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                checkFields()
+            }
+        })
+
         // Initial state check for button color
         checkFields()
 
         // Handle ketika tombol login diklik
         loginButton.setOnClickListener {
+            val email = emailEditText.text.toString()
+            val password = passwordEditText.text.toString()
+
             if (isAnyFieldEmpty()) {
                 showFillAllFieldsWarning()
             } else {
-                val email = emailEditText.text.toString()
-                val password = passwordEditText.text.toString()
                 if (isEmailValid(email)) {
                     // Proses login (contoh sederhana)
                     Toast.makeText(activity, "Login successful", Toast.LENGTH_SHORT).show()
                     findNavController().navigate(R.id.action_loginFragment_to_detailBookFragment)
                 } else {
-                    showFillAllFieldsWarning()
+                    showValidationWarning("Invalid email format", emailEditText)
                 }
             }
         }
