@@ -51,11 +51,13 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupBottomNavigation() {
-        val bottomNavigationView = binding.root.findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        val bottomNavigationView = binding.bottomNavigation
+        bottomNavigationView.selectedItemId = R.id.home
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+
             when (item.itemId) {
                 R.id.home -> {
-                    // Navigate to Home
+                    // Already in HomeFragment
                     true
                 }
                 R.id.search -> {
@@ -63,11 +65,11 @@ class HomeFragment : Fragment() {
                     true
                 }
                 R.id.history -> {
-                    // Navigate to History
+                    findNavController().navigate(R.id.action_homeFragment_to_historyFragment)
                     true
                 }
                 R.id.profile -> {
-                    // Navigate to Profile
+                    findNavController().navigate(R.id.action_homeFragment_to_profileFragment)
                     true
                 }
                 else -> false
