@@ -7,76 +7,78 @@
     android:layout_height="match_parent"
     tools:context=".HomeFragment">
 
-    <!-- Title TextView with Montserrat font -->
-    <TextView
-        android:id="@+id/title_bookly"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Bookly"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#000"
-        android:fontFamily="@font/montserrat_extrabold"
-        android:layout_margin="16dp"
+    <!-- Scrollable content -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/viewPager"/>
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <!-- ViewPager for banner carousel -->
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/viewPager"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        app:layout_constraintTop_toBottomOf="@id/title_bookly"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-    <!-- Trending section title -->
-    <TextView
-        android:id="@+id/trending_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Trending"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:fontFamily="@font/montserrat_bold"
-        app:layout_constraintTop_toBottomOf="@id/viewPager"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="16dp"/>
+            <!-- Title TextView with Montserrat font -->
+            <TextView
+                android:id="@+id/title_bookly"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bookly"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#000"
+                android:fontFamily="@font/montserrat_extrabold"/>
 
-    <!-- RecyclerView for trending books -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/trending_recycler_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/trending_label"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+            <!-- ViewPager for banner carousel -->
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="8dp"/>
 
-    <!-- Section title for user preferences -->
-    <TextView
-        android:id="@+id/preferences_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Based off your preferences"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:fontFamily="@font/montserrat_bold"
-        app:layout_constraintTop_toBottomOf="@id/trending_recycler_view"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="16dp"/>
+            <!-- Trending section title -->
+            <TextView
+                android:id="@+id/trending_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trending"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:fontFamily="@font/montserrat_bold"
+                android:layout_marginTop="16dp"/>
 
-    <!-- RecyclerView for books based on user preferences -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/preferences_recycler_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/preferences_label"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+            <!-- RecyclerView for trending books -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/trending_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"/>
+
+            <!-- Section title for user preferences -->
+            <TextView
+                android:id="@+id/preferences_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Based off your preferences"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:fontFamily="@font/montserrat_bold"
+                android:layout_marginTop="16dp"/>
+
+            <!-- RecyclerView for books based on user preferences -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/preferences_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <!-- Bottom Navigation for navigation between pages -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
