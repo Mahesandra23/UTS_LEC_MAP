@@ -28,6 +28,7 @@ class DetailBookFragment : Fragment() {
         val writerTextView = view.findViewById<TextView>(R.id.tv_writter)
 
         // Set data to views (static or dynamic based on your implementation)
+        val bookCoverImageView = view.findViewById<ImageView>(R.id.iv_book_cover)
         bookTitleTextView.text = "HARRY POTTER: CURSED CHILD"
         writerTextView.text = "By: J.K. Rowling"
         synopsisTextView.text = "It was always difficult being Harry Potter and it isn’t much easier now that he is an overworked employee of the Ministry of Magic, a husband and father of three school-age children. While Harry grapples with a past that refuses to stay where it belongs, his youngest son Albus must struggle with the weight of a family legacy he never wanted. As past and present fuse ominously, both father and son learn the uncomfortable truth: sometimes, darkness comes from unexpected places."

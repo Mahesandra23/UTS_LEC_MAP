@@ -13,9 +13,9 @@
             android:id="@+id/action_loginFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
         <!-- Action menuju DetailBookFragment -->
-        <action
-            android:id="@+id/action_loginFragment_to_detailBookFragment"
-            app:destination="@id/detailBookFragment" />
+        <!-- <action -->
+        <!--     android:id="@+id/action_loginFragment_to_detailBookFragment" -->
+         <!--   app:destination="@id/detailBookFragment" />-->
     </fragment>
 
     <fragment
