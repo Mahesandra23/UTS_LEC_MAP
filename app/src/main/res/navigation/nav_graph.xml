@@ -2,7 +2,27 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/AdminFragment">
+
+    <fragment
+        android:id="@+id/AdminFragment"
+        android:name="com.example.uts_lec_map.AdminFragment"
+        android:label="Admin Fragment"
+        tools:layout="@layout/fragment_admin">
+        <action
+            android:id="@+id/action_adminFragment_to_addBookFragment"
+            app:destination="@id/addBookFragment" />
+        <!-- <action
+            android:id="@+id/action_adminFragment_to_editBookFragment"
+            app:destination="@id/editBookFragment" /> -->
+    </fragment>
+
+    <fragment
+        android:id="@+id/addBookFragment"
+        android:name="com.example.uts_lec_map.AddBookFragment"
+        android:label="Add Book"
+        tools:layout="@layout/fragment_add_book" />
+
 
     <fragment
         android:id="@+id/loginFragment"

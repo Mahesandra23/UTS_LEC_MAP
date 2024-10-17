@@ -20,16 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import java.util.Calendar
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-const val ARG_PARAM1 = "param1"
-const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [SignUpFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SignUpFragment : Fragment() {
 
     override fun onCreateView(

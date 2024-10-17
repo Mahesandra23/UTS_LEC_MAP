@@ -103,13 +103,4 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
-    companion object {
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }
