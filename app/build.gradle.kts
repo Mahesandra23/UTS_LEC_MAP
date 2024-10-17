@@ -35,13 +35,16 @@ android {
         jvmTarget = "1.8"
     }
 
+    // Enable viewBinding and dataBinding
     viewBinding {
+        enable = true
+    }
+    dataBinding {
         enable = true
     }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -53,5 +56,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.androidx.recyclerview)
+    implementation("androidx.recyclerview:recyclerview:1.3.1")
 }

@@ -12,10 +12,10 @@
         <action
             android:id="@+id/action_loginFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
-        <!-- Action menuju DetailBookFragment -->
-        <!-- <action -->
-        <!--     android:id="@+id/action_loginFragment_to_detailBookFragment" -->
-         <!--   app:destination="@id/detailBookFragment" />-->
+        <!-- Action menuju home frament -->
+         <action
+             android:id="@+id/action_loginFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
 
     <!-- SignUp Fragment -->
@@ -47,6 +47,9 @@
         <action
             android:id="@+id/action_homeFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_detailBookFragment"
+            app:destination="@id/detailBookFragment" />
     </fragment>
 
     <!-- Search Fragment -->
@@ -64,6 +67,9 @@
         <action
             android:id="@+id/action_searchFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_detailBookFragment"
+            app:destination="@id/detailBookFragment" />
     </fragment>
 
     <!-- History Fragment -->
