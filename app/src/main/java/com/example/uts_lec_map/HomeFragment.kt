@@ -43,42 +43,20 @@ class HomeFragment : Fragment() {
 
         // Setup RecyclerViews dan Bottom Navigation
         setupRecyclerViews()  // Pastikan adapter diinisialisasi
-        setupBottomNavigation() // Menyiapkan BottomNavigationView
+        setupViewPager() // Menyiapkan BottomNavigationView
 
         // Ambil data dari Firebase
         getBooksFromFirebase()
-        getBannerFromFirebase() // Ambil data banner dari Firebase
-
         return binding.root
     }
 
-    private fun setupViewPager(bannerImages: List<String>) {
-        if (bannerImages.isNotEmpty()) {
-            val bannerPagerAdapter = BannerPagerAdapter(requireContext(), bannerImages)
-            binding.viewPager.adapter = bannerPagerAdapter
-        }
+    private fun setupViewPager() {
+        // Set banner ViewPager dengan drawable placeholder
+        val bannerImages = listOf(R.drawable.banner1, R.drawable.banner2, R.drawable.banner3)
+        val bannerPagerAdapter = BannerPagerAdapter(requireContext(), bannerImages)
+        binding.viewPager.adapter = bannerPagerAdapter
     }
 
-    private fun getBannerFromFirebase() {
-        bannerDatabase.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val bannerImages = mutableListOf<String>()
-                for (bannerSnapshot in snapshot.children) {
-                    // Ambil URL banner dari key-value di dalam snapshot
-                    val bannerUrl = bannerSnapshot.getValue(String::class.java)
-                    if (bannerUrl != null) {
-                        bannerImages.add(bannerUrl) // Tambahkan URL banner ke list
-                    }
-                }
-                // Update ViewPager dengan gambar yang diambil dari Firebase
-                setupViewPager(bannerImages)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "Gagal mengambil data banner.", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
 
     private fun setupRecyclerViews() {
         // Set RecyclerView untuk trending books
