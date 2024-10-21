@@ -44,7 +44,7 @@ class HomeFragment : Fragment() {
         // Setup RecyclerViews dan Bottom Navigation
         setupRecyclerViews()  // Pastikan adapter diinisialisasi
         setupViewPager() // Menyiapkan BottomNavigationView
-        setupBottomNavigation()
+        setupBottomNavigation() // Tambahkan ini agar BottomNavigationView berfungsi
 
         // Ambil data dari Firebase
         getBooksFromFirebase()

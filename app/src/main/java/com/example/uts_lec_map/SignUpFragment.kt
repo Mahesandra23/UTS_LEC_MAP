@@ -19,9 +19,15 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import java.util.Calendar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+
 
 
 class SignUpFragment : Fragment() {
+    private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseDatabase
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -37,6 +43,9 @@ class SignUpFragment : Fragment() {
         val confirmPasswordEditText = view.findViewById<EditText>(R.id.et_confirm_password_signup)
         val signUpTextView = view.findViewById<TextView>(R.id.tv_login)
         val spannableString = SpannableString("Already have an account? login")
+
+        auth = FirebaseAuth.getInstance()
+
 
 // Set warna biru untuk kata "login"
         spannableString.setSpan(
@@ -90,9 +99,17 @@ class SignUpFragment : Fragment() {
                 val confirmPassword = confirmPasswordEditText.text.toString()
 
                 if (password == confirmPassword) {
-                    // Proses Sign Up berhasil
-                    Toast.makeText(activity, "Sign Up successful", Toast.LENGTH_SHORT).show()
-                    findNavController().navigate(R.id.action_signUpFragment_to_loginFragment)
+                    auth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                // Firebase sign-up success
+                                Toast.makeText(activity, "Sign Up successful", Toast.LENGTH_SHORT).show()
+                                findNavController().navigate(R.id.action_signUpFragment_to_loginFragment)
+                            } else {
+                                // Firebase sign-up failed
+                                Toast.makeText(activity, "Sign Up failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                            }
+                        }
                 } else {
                     Toast.makeText(activity, "Passwords do not match", Toast.LENGTH_SHORT).show()
                 }
