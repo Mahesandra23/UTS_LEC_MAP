@@ -1,14 +1,9 @@
 package com.example.uts_lec_map
 
 import android.app.DatePickerDialog
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
-import android.text.Spannable
-import android.text.SpannableString
 import android.text.TextWatcher
-import android.text.style.ForegroundColorSpan
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,26 +12,15 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import java.util.Calendar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import java.util.Calendar
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-const val ARG_PARAM1 = "param1"
-const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SignUpFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SignUpFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var database: FirebaseDatabase
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -50,25 +34,10 @@ class SignUpFragment : Fragment() {
         val emailEditText = view.findViewById<EditText>(R.id.et_email_signup)
         val passwordEditText = view.findViewById<EditText>(R.id.et_password_signup)
         val confirmPasswordEditText = view.findViewById<EditText>(R.id.et_confirm_password_signup)
-        val signUpTextView = view.findViewById<TextView>(R.id.tv_login)
-        val spannableString = SpannableString("Already have an account? login")
+        val signUpTextView: TextView = view.findViewById(R.id.signUpTextView)
 
         auth = FirebaseAuth.getInstance()
-
-
-// Set warna biru untuk kata "login"
-        spannableString.setSpan(
-            ForegroundColorSpan(Color.BLUE),
-            spannableString.length - 5,
-            spannableString.length,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-        signUpTextView.text = spannableString
-
-        signUpTextView.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
-        }
-
+        database = FirebaseDatabase.getInstance()
 
         // Fungsi untuk mengecek apakah ada input yang kosong
         fun isAnyFieldEmpty(): Boolean {
@@ -78,19 +47,6 @@ class SignUpFragment : Fragment() {
                     emailEditText.text.isEmpty() ||
                     passwordEditText.text.isEmpty() ||
                     confirmPasswordEditText.text.isEmpty()
-        }
-
-        val isAllFieldsFilled = namaEditText.text.isNotEmpty() &&
-                tanggalLahirEditText.text.isNotEmpty() &&
-                noTelpEditText.text.isNotEmpty() &&
-                emailEditText.text.isNotEmpty() &&
-                passwordEditText.text.isNotEmpty() &&
-                confirmPasswordEditText.text.isNotEmpty()
-
-        if (isAllFieldsFilled) {
-            signUpButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.black) // Ubah warna ke warna aktif
-        } else {
-            signUpButton.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.grey) // Warna abu-abu
         }
 
         // Fungsi untuk menampilkan pesan jika ada field yang kosong
@@ -111,11 +67,28 @@ class SignUpFragment : Fragment() {
                     auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                // Firebase sign-up success
-                                Toast.makeText(activity, "Sign Up successful", Toast.LENGTH_SHORT).show()
-                                findNavController().navigate(R.id.action_signUpFragment_to_loginFragment)
+                                val userId = auth.currentUser?.uid
+
+                                // Simpan data pengguna ke Firebase Realtime Database
+                                val userMap = hashMapOf(
+                                    "name" to namaEditText.text.toString(),
+                                    "dateOfBirth" to tanggalLahirEditText.text.toString(),
+                                    "phone" to noTelpEditText.text.toString(),
+                                    "email" to email
+                                )
+
+                                userId?.let {
+                                    database.getReference("users").child(it).setValue(userMap)
+                                        .addOnCompleteListener { databaseTask ->
+                                            if (databaseTask.isSuccessful) {
+                                                Toast.makeText(activity, "Sign Up successful", Toast.LENGTH_SHORT).show()
+                                                findNavController().navigate(R.id.action_signUpFragment_to_loginFragment)
+                                            } else {
+                                                Toast.makeText(activity, "Database Error: ${databaseTask.exception?.message}", Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
+                                }
                             } else {
-                                // Firebase sign-up failed
                                 Toast.makeText(activity, "Sign Up failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                             }
                         }
@@ -160,11 +133,6 @@ class SignUpFragment : Fragment() {
         // Fungsi untuk validasi password
         fun isPasswordValid(password: String): Boolean {
             return password.length >= 7
-        }
-
-        // Fungsi untuk menampilkan pesan validasi
-        fun showValidationWarning(message: String) {
-            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
         }
 
         // Menambahkan TextWatcher untuk validasi langsung
@@ -227,21 +195,6 @@ class SignUpFragment : Fragment() {
                 }
             }
         })
-
-// Handle ketika tombol Sign Up diklik
-        signUpButton.setOnClickListener {
-            if (isAnyFieldEmpty()) {
-                showFillAllFieldsWarning()
-            } else {
-                // Jika semua validasi sudah ditangani di TextWatcher, lanjutkan ke proses sign up
-                Toast.makeText(activity, "Sign Up successful", Toast.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.action_signUpFragment_to_loginFragment)
-            }
-        }
-
-
-
-
 
         return view
     }
