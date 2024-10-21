@@ -8,16 +8,6 @@
     android:gravity="center">
 
     <TextView
-        android:id="@+id/signUpTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sign Up"
-        android:textSize="16sp"
-        android:layout_marginTop="16dp"
-        android:textColor="@android:color/holo_blue_dark" />
-
-
-    <TextView
         android:id="@+id/tv_login_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -105,14 +95,12 @@
         android:backgroundTint="@color/black" />
 
     <TextView
-        android:id="@+id/tv_login"
+        android:id="@+id/signUpTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Already have an account? Login"
-        android:fontFamily="@font/montserrat_regular"
-        android:padding="16dp"
-        android:textColor="@android:color/holo_blue_dark"
-        android:layout_gravity="center_horizontal"
-        android:onClick="redirectToLogin" />
+        android:textSize="16sp"
+        android:layout_marginTop="16dp"
+        android:textColor="@android:color/holo_blue_dark" />
 
 </LinearLayout>
