@@ -5,5 +5,6 @@ data class Book(
     val cover: String = "",
     val harga: Int = 0,
     val penulis: String = "",
-    val sinopsis: String = ""
+    val sinopsis: String = "",
+    val isi_cerita: String=""
 )

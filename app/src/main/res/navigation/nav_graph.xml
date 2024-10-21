@@ -5,6 +5,18 @@
     app:startDestination="@id/loginFragment">
 
     <fragment
+        android:id="@+id/readFragment"
+        android:name="com.example.uts_lec_map.ReadFragment"
+        android:label="Read"
+        tools:layout="@layout/fragment_read">
+
+    <action
+        android:id="@+id/action_readFragment_to_homeFragment"
+        app:destination="@id/homeFragment" />
+    </fragment>
+
+
+    <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.uts_lec_map.LoginFragment"
         android:label="Login"
@@ -50,6 +62,9 @@
         <action
             android:id="@+id/action_homeFragment_to_detailBookFragment"
             app:destination="@id/detailBookFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_readFragment"
+            app:destination="@id/readFragment" />
     </fragment>
 
     <!-- Search Fragment -->

@@ -35,5 +35,4 @@
         android:text="Rp 50000"
         android:textSize="14sp"
         android:paddingTop="2dp" />
-
 </LinearLayout>
