@@ -24,7 +24,7 @@ class AdminFragment : Fragment() {
                     true
                 }
                 R.id.book_list -> {
-                    // Navigate to BookListFragment (or handle the action for viewing book list)
+                    findNavController().navigate(R.id.action_adminFragment_to_bookListFragment)
                     true
                 }
                 else -> false
@@ -40,10 +40,10 @@ class AdminFragment : Fragment() {
             findNavController().navigate(R.id.action_adminFragment_to_addBookFragment) // ganti sesuai dengan ID action yang sesuai
         }
 
-       // editBookTextView.setOnClickListener {
+        editBookTextView.setOnClickListener {
             // Navigasi ke fragment atau activity untuk mengedit buku
-        //    findNavController().navigate(R.id.action_adminFragment_to_editBookFragment) // ganti sesuai dengan ID action yang sesuai
-        //}
+            findNavController().navigate(R.id.action_adminFragment_to_editBookFragment) // ganti sesuai dengan ID action yang sesuai
+        }
 
         return view
     }
