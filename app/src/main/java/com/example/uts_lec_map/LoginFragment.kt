@@ -16,8 +16,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.FirebaseAuth
+
 
 class LoginFragment : Fragment() {
+    private lateinit var auth: FirebaseAuth
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -30,6 +34,8 @@ class LoginFragment : Fragment() {
         val signUpTextView = view.findViewById<TextView>(R.id.tv_sign_up)
         val fullText = "Don't have an account? Sign Up"
         val spannableString = SpannableString(fullText)
+
+        auth = FirebaseAuth.getInstance()
 
         // Mengatur teks ke TextView
         signUpTextView.text = spannableString
@@ -105,16 +111,18 @@ class LoginFragment : Fragment() {
             val email = emailEditText.text.toString()
             val password = passwordEditText.text.toString()
 
-            if (isAnyFieldEmpty()) {
-                showFillAllFieldsWarning()
+            if (email.isNotEmpty() && password.isNotEmpty()) {
+                auth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Toast.makeText(activity, "Login successful", Toast.LENGTH_SHORT).show()
+                            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                        } else {
+                            Toast.makeText(activity, "Login failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
             } else {
-                if (isEmailValid(email)) {
-                    // Proses login (contoh sederhana)
-                    Toast.makeText(activity, "Login successful", Toast.LENGTH_SHORT).show()
-                    findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-                } else {
-                    showValidationWarning("Invalid email format", emailEditText)
-                }
+                Toast.makeText(activity, "Please fill out all fields", Toast.LENGTH_SHORT).show()
             }
         }
 

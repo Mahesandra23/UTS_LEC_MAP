@@ -1,6 +1,7 @@
 package com.example.uts_lec_map
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +12,20 @@ import com.example.uts_lec_map.adapters.BannerPagerAdapter
 import com.example.uts_lec_map.adapters.BookAdapter
 import com.example.uts_lec_map.databinding.FragmentHomeBinding
 import com.example.uts_lec_map.models.Book
-import com.google.android.material.bottomnavigation.BottomNavigationView
-
+import com.google.firebase.database.*
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var trendingBooks: MutableList<Book>
+    private lateinit var preferenceBooks: MutableList<Book>
+    private lateinit var bookDatabase: DatabaseReference
+    private lateinit var bannerDatabase: DatabaseReference
+
+    // Adapter untuk RecyclerView
+    private lateinit var trendingAdapter: BookAdapter
+    private lateinit var preferenceAdapter: BookAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,10 +33,21 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        setupViewPager()
-        setupRecyclerViews()
-        setupBottomNavigation() // Menyiapkan BottomNavigationView
+        // Inisialisasi Firebase Database
+        bookDatabase = FirebaseDatabase.getInstance().getReference("buku")
+        bannerDatabase = FirebaseDatabase.getInstance().getReference("banner") // Referensi banner di Firebase
 
+        // Inisialisasi list buku
+        trendingBooks = mutableListOf()
+        preferenceBooks = mutableListOf()
+
+        // Setup RecyclerViews dan Bottom Navigation
+        setupRecyclerViews()  // Pastikan adapter diinisialisasi
+        setupViewPager() // Menyiapkan BottomNavigationView
+        setupBottomNavigation() // Tambahkan ini agar BottomNavigationView berfungsi
+
+        // Ambil data dari Firebase
+        getBooksFromFirebase()
         return binding.root
     }
 
@@ -38,35 +58,25 @@ class HomeFragment : Fragment() {
         binding.viewPager.adapter = bannerPagerAdapter
     }
 
+
     private fun setupRecyclerViews() {
         // Set RecyclerView untuk trending books
-        val trendingBooks = getTrendingBooks()
         binding.trendingRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        val trendingAdapter = BookAdapter(requireContext(), trendingBooks) { book ->
-            // Navigate to detail book page when a trending book is clicked
-            findNavController().navigate(R.id.action_homeFragment_to_detailBookFragment)
-        }
+        trendingAdapter = BookAdapter(requireContext(), trendingBooks)
         binding.trendingRecyclerView.adapter = trendingAdapter
 
-        // Set RecyclerView untuk preference books
-        val preferenceBooks = getPreferenceBooks()
+        // Set RecyclerView untuk books berdasarkan preferensi
         binding.preferencesRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        val preferenceAdapter = BookAdapter(requireContext(), preferenceBooks) { book ->
-            // Navigate to detail book page when a preference book is clicked
-            findNavController().navigate(R.id.action_homeFragment_to_detailBookFragment)
-        }
+        preferenceAdapter = BookAdapter(requireContext(), preferenceBooks)
         binding.preferencesRecyclerView.adapter = preferenceAdapter
     }
 
     private fun setupBottomNavigation() {
         val bottomNavigationView = binding.bottomNavigation
-        bottomNavigationView.selectedItemId = R.id.home // Mark Search as selected
+        bottomNavigationView.selectedItemId = R.id.home // Mark Home as selected
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.home -> {
-                    // Navigate to Home
-                    true
-                }
+                R.id.home -> true
                 R.id.search -> {
                     findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
                     true
@@ -84,32 +94,36 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun getTrendingBooks(): List<Book> {
-        return listOf(
-            Book("Solo Leveling", android.R.drawable.ic_menu_gallery),
-            Book("Harry Potter", android.R.drawable.ic_menu_camera)
-        )
-    }
+    private fun getBooksFromFirebase() {
+        bookDatabase.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                trendingBooks.clear() // Kosongkan list trending sebelum menambahkan data baru
+                preferenceBooks.clear() // Kosongkan list preference juga
 
-    private fun getPreferenceBooks(): List<Book> {
-        return listOf(
-            Book("Bukan Aku yang Dia Inginkan", android.R.drawable.ic_menu_gallery),
-            Book("Harry Potter", android.R.drawable.ic_menu_camera)
-        )
+                for (bookSnapshot in snapshot.children) {
+                    val book = bookSnapshot.getValue(Book::class.java)
+                    if (book != null) {
+                        trendingBooks.add(book) // Menambahkan semua buku ke trendingBooks
+
+                        // Kriteria untuk preferensi
+                        if (book.harga > 50000) { // Misalnya buku dengan harga lebih dari 50.000
+                            preferenceBooks.add(book)
+                        }
+                    }
+                }
+                // Beri tahu adapter bahwa data telah berubah
+                trendingAdapter.notifyDataSetChanged()
+                preferenceAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(requireContext(), "Gagal mengambil data dari Firebase.", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object {
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }
