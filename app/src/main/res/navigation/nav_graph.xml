@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-na    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/AdminFragment"
@@ -64,7 +64,15 @@ na    app:startDestination="@id/loginFragment">
         android:name="com.example.uts_lec_map.ReadFragment"
         android:label="Read"
         tools:layout="@layout/fragment_read">
-
+        <argument
+            android:name="judul"
+            app:argType="string" />
+        <argument
+            android:name="penulis"
+            app:argType="string" />
+        <argument
+            android:name="isi_cerita"
+            app:argType="string" />
     <action
         android:id="@+id/action_readFragment_to_homeFragment"
         app:destination="@id/homeFragment" />
@@ -184,6 +192,9 @@ na    app:startDestination="@id/loginFragment">
         <argument
             android:name="book"
             app:argType="com.example.uts_lec_map.models.Book" />
+        <action
+            android:id="@+id/action_detailBookFragment_to_readFragment"
+            app:destination="@id/readFragment" />
     </fragment>
 </navigation>
 

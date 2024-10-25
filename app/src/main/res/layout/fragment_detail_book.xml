@@ -62,7 +62,7 @@
                     android:id="@+id/btn_buy"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Buy"
+                    android:text="read"
                     android:textColor="@android:color/white"
                     android:backgroundTint="@color/bluebuy"
                     android:layout_marginTop="16dp"

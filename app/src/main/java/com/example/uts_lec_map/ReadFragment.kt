@@ -20,15 +20,15 @@ class ReadFragment : Fragment() {
     ): View {
         _binding = FragmentReadBinding.inflate(inflater, container, false)
 
-        // Retrieve data from the arguments
+        // Ambil data dari arguments
         val judul = arguments?.getString("judul") ?: "Unknown Title"
         val penulis = arguments?.getString("penulis") ?: "Unknown Author"
         val isi_cerita = arguments?.getString("isi_cerita") ?: "No Content Available"
 
-        // Set the data to UI components
+        // Set data ke komponen UI
         binding.bookTitle.text = judul
         binding.bookAuthor.text = "By $penulis"
-        binding.bookCerita.text = isi_cerita // Menampilkan isi_cerita
+        binding.bookCerita.text = isi_cerita // Menampilkan isi cerita
 
         return binding.root
     }
