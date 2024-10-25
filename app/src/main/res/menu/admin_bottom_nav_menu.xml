@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/add_book"
+        android:icon="@drawable/ic_add_book"
+        android:title="Tambah Buku"/>
+    <item
+        android:id="@+id/book_list"
+        android:icon="@drawable/ic_book_list"
+        android:title="Daftar Buku"/>
+</menu>

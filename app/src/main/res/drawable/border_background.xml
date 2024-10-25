@@ -1,0 +1,9 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@android:color/transparent" /> <!-- Warna latar belakang -->
+    <stroke
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:width="3dp"
+        android:color="@android:color/black" /> <!-- Warna dan ketebalan border -->
+    <corners android:radius="4dp" /> <!-- Radius sudut, jika ingin membulat -->
+</shape>

@@ -2,7 +2,62 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/AdminFragment">
+
+    <fragment
+        android:id="@+id/AdminFragment"
+        android:name="com.example.uts_lec_map.AdminFragment"
+        android:label="Admin Fragment"
+        tools:layout="@layout/fragment_admin">
+
+        <action
+            android:id="@+id/action_adminFragment_to_addBookFragment"
+            app:destination="@id/addBookFragment" />
+
+        <action
+            android:id="@+id/action_adminFragment_to_editBookFragment"
+            app:destination="@id/editBookFragment" />
+
+        <action
+            android:id="@+id/action_adminFragment_to_bookListFragment"
+            app:destination="@id/bookListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/bookListFragment"
+        android:name="com.example.uts_lec_map.ListBookFragment"
+        android:label="List Book"
+        tools:layout="@layout/fragment_list_book" >
+    <action
+        android:id="@+id/action_listBookFragment_to_adminFragment"
+        app:destination="@id/AdminFragment" />
+    </fragment>
+
+
+
+    <fragment
+        android:id="@+id/editBookFragment"
+        android:name="com.example.uts_lec_map.EditBookFragment"
+        android:label="Edit Book Fragment"
+        tools:layout="@layout/fragment_edit_book">
+
+        <action
+            android:id="@+id/action_editBookFragment_to_adminFragment"
+            app:destination="@id/AdminFragment" />
+    </fragment>
+
+
+
+    <fragment
+        android:id="@+id/addBookFragment"
+        android:name="com.example.uts_lec_map.AddBookFragment"
+        android:label="Add Book"
+        tools:layout="@layout/fragment_add_book" >
+    <action
+        android:id="@+id/action_addBookFragment_to_adminFragment"
+        app:destination="@id/AdminFragment" />
+    </fragment>
+
 
     <fragment
         android:id="@+id/loginFragment"
