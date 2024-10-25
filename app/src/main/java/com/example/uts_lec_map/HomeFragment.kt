@@ -35,16 +35,16 @@ class HomeFragment : Fragment() {
 
         // Inisialisasi Firebase Database
         bookDatabase = FirebaseDatabase.getInstance().getReference("buku")
-        bannerDatabase = FirebaseDatabase.getInstance().getReference("banner") // Referensi banner di Firebase
+        bannerDatabase = FirebaseDatabase.getInstance().getReference("banner")
 
         // Inisialisasi list buku
         trendingBooks = mutableListOf()
         preferenceBooks = mutableListOf()
 
         // Setup RecyclerViews dan Bottom Navigation
-        setupRecyclerViews()  // Pastikan adapter diinisialisasi
-        setupViewPager() // Menyiapkan BottomNavigationView
-        setupBottomNavigation() // Tambahkan ini agar BottomNavigationView berfungsi
+        setupRecyclerViews()
+        setupViewPager()
+        setupBottomNavigation()
 
         // Ambil data dari Firebase
         getBooksFromFirebase()
@@ -57,7 +57,6 @@ class HomeFragment : Fragment() {
         val bannerPagerAdapter = BannerPagerAdapter(requireContext(), bannerImages)
         binding.viewPager.adapter = bannerPagerAdapter
     }
-
 
     private fun setupRecyclerViews() {
         // Set RecyclerView untuk trending books
@@ -73,7 +72,7 @@ class HomeFragment : Fragment() {
 
     private fun setupBottomNavigation() {
         val bottomNavigationView = binding.bottomNavigation
-        bottomNavigationView.selectedItemId = R.id.home // Mark Home as selected
+        bottomNavigationView.selectedItemId = R.id.home
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.home -> true
@@ -94,6 +93,7 @@ class HomeFragment : Fragment() {
         }
     }
 
+    // HomeFragment.kt
     private fun getBooksFromFirebase() {
         bookDatabase.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -106,7 +106,7 @@ class HomeFragment : Fragment() {
                         trendingBooks.add(book) // Menambahkan semua buku ke trendingBooks
 
                         // Kriteria untuk preferensi
-                        if (book.harga > 50000) { // Misalnya buku dengan harga lebih dari 50.000
+                        if (book.harga > 50000) {
                             preferenceBooks.add(book)
                         }
                     }
@@ -121,6 +121,7 @@ class HomeFragment : Fragment() {
             }
         })
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

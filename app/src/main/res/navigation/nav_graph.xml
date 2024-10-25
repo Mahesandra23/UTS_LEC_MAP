@@ -106,11 +106,14 @@
             app:destination="@id/historyFragment" />
     </fragment>
 
-    <!-- Tambahkan DetailBookFragment -->
     <fragment
         android:id="@+id/detailBookFragment"
         android:name="com.example.uts_lec_map.DetailBookFragment"
         android:label="Detail Book"
-        tools:layout="@layout/fragment_detail_book" />
+        tools:layout="@layout/fragment_detail_book">
+        <argument
+            android:name="book"
+            app:argType="com.example.uts_lec_map.models.Book" />
+    </fragment>
 </navigation>
 

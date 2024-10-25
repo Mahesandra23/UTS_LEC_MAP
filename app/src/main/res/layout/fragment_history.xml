@@ -20,6 +20,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- TextView to display a message when no books are available -->
+    <TextView
+        android:id="@+id/tvNoBooks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No books purchased yet!"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/tv_history_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+
     <!-- RecyclerView for displaying the history list -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_history"
@@ -28,7 +42,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_history_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation" />
 
     <!-- BottomNavigationView for navigating between different fragments -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
