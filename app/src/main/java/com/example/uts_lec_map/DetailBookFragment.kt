@@ -13,9 +13,9 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.uts_lec_map.models.Book
 import com.google.firebase.database.*
-import androidx.navigation.fragment.NavHostFragment
 
-
+// DetailBookFragment.kt
+// DetailBookFragment.kt
 class DetailBookFragment : Fragment() {
 
     private lateinit var bookDatabase: DatabaseReference
@@ -36,7 +36,7 @@ class DetailBookFragment : Fragment() {
         val synopsisTextView = view.findViewById<TextView>(R.id.tv_book_synopsis)
         val bookCoverImageView = view.findViewById<ImageView>(R.id.iv_book_cover)
         val backButton = view.findViewById<ImageView>(R.id.iv_back_button)
-        val btnBuy = view.findViewById<Button>(R.id.btn_buy) // Tambahkan ini untuk button
+        val buyButton = view.findViewById<Button>(R.id.btn_buy)
 
         // Inisialisasi Firebase
         bookDatabase = FirebaseDatabase.getInstance().getReference("buku")
@@ -71,19 +71,16 @@ class DetailBookFragment : Fragment() {
         } else {
             Toast.makeText(requireContext(), "Judul buku tidak ditemukan", Toast.LENGTH_SHORT).show()
         }
-
+        buyButton.setOnClickListener {
+            findNavController().navigate(R.id.action_detailBookFragment_to_readFragment)
+        }
         // Handle back button
         backButton.setOnClickListener {
             // Kembali ke halaman sebelumnya
             requireActivity().onBackPressed()
         }
 
-        // Handle button "read"
-        btnBuy.setOnClickListener {
-            // Navigasi ke ReadFragment
-            findNavController().navigate(R.id.action_detailBookFragment_to_readFragment)
-        }
-
         return view
     }
 }
+
