@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#EDEDED">
+
+    <!-- FrameLayout untuk gambar buku, tombol kembali, dan container title serta buy button -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"> <!-- Memungkinkan elemen di dalamnya melampaui batas -->
+
+        <!-- Book Image -->
+        <ImageView
+            android:id="@+id/iv_book_cover"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:src="@drawable/harry_potter"
+            android:contentDescription="Book Cover"
+            android:scaleType="fitXY" /> <!-- Menghindari gambar terpotong -->
+
+        <!-- Back Button -->
+        <ImageView
+            android:id="@+id/iv_back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_arrow_back_24"
+            android:contentDescription="Back"
+            android:layout_gravity="start|top"
+            android:layout_margin="16dp" />
+
+        <!-- Container for Title, Buy Button and synopsis -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="4dp"
+            android:layout_marginTop="437dp"
+            android:translationY="50dp"> <!-- Menggunakan translationY untuk melewati layar -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1000dp"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Book Title -->
+                <TextView
+                    android:id="@+id/tv_book_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp" />
+
+                <!-- Buy Button -->
+                <Button
+                    android:id="@+id/btn_buy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="read"
+                    android:textColor="@android:color/white"
+                    android:backgroundTint="@color/bluebuy"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginLeft="40dp" />
+
+                <!-- sinopsis -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="320dp"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        android:id="@+id/tv_writter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="By:"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:layout_marginTop="4dp"
+                        android:paddingStart="8dp" />
+
+                    <TextView
+                        android:id="@+id/tv_synopsis_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Synopsis:"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:layout_marginTop="0dp"
+                        android:paddingStart="8dp" />
+
+                    <!-- ScrollView untuk bagian sinopsis -->
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="130dp"
+                        android:layout_marginTop="8dp">
+
+                        <TextView
+                            android:id="@+id/tv_book_synopsis"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/black"
+                            android:textSize="14sp"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp" />
+                    </ScrollView>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </FrameLayout>
+</LinearLayout>

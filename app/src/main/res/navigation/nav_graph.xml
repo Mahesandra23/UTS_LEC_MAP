@@ -5,6 +5,81 @@
     app:startDestination="@id/loginFragment">
 
     <fragment
+        android:id="@+id/AdminFragment"
+        android:name="com.example.uts_lec_map.AdminFragment"
+        android:label="Admin Fragment"
+        tools:layout="@layout/fragment_admin">
+
+        <action
+            android:id="@+id/action_adminFragment_to_addBookFragment"
+            app:destination="@id/addBookFragment" />
+
+        <action
+            android:id="@+id/action_adminFragment_to_editBookFragment"
+            app:destination="@id/editBookFragment" />
+
+        <action
+            android:id="@+id/action_adminFragment_to_bookListFragment"
+            app:destination="@id/bookListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/bookListFragment"
+        android:name="com.example.uts_lec_map.ListBookFragment"
+        android:label="List Book"
+        tools:layout="@layout/fragment_list_book" >
+    <action
+        android:id="@+id/action_listBookFragment_to_adminFragment"
+        app:destination="@id/AdminFragment" />
+    </fragment>
+
+
+
+    <fragment
+        android:id="@+id/editBookFragment"
+        android:name="com.example.uts_lec_map.EditBookFragment"
+        android:label="Edit Book Fragment"
+        tools:layout="@layout/fragment_edit_book">
+
+        <action
+            android:id="@+id/action_editBookFragment_to_adminFragment"
+            app:destination="@id/AdminFragment" />
+    </fragment>
+
+
+
+    <fragment
+        android:id="@+id/addBookFragment"
+        android:name="com.example.uts_lec_map.AddBookFragment"
+        android:label="Add Book"
+        tools:layout="@layout/fragment_add_book" >
+    <action
+        android:id="@+id/action_addBookFragment_to_adminFragment"
+        app:destination="@id/AdminFragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/readFragment"
+        android:name="com.example.uts_lec_map.ReadFragment"
+        android:label="Read"
+        tools:layout="@layout/fragment_read">
+        <argument
+            android:name="judul"
+            app:argType="string" />
+        <argument
+            android:name="penulis"
+            app:argType="string" />
+        <argument
+            android:name="isi_cerita"
+            app:argType="string" />
+    <action
+        android:id="@+id/action_readFragment_to_homeFragment"
+        app:destination="@id/homeFragment" />
+    </fragment>
+
+
+    <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.uts_lec_map.LoginFragment"
         android:label="Login"
@@ -12,8 +87,13 @@
         <action
             android:id="@+id/action_loginFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
+        <!-- Action menuju home frament -->
+         <action
+             android:id="@+id/action_loginFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
 
+    <!-- SignUp Fragment -->
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.example.uts_lec_map.SignUpFragment"
@@ -22,6 +102,99 @@
         <action
             android:id="@+id/action_signUpFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_signUpFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+
+    <!-- Home Fragment -->
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.uts_lec_map.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_historyFragment"
+            app:destination="@id/historyFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_detailBookFragment"
+            app:destination="@id/detailBookFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_readFragment"
+            app:destination="@id/readFragment" />
+    </fragment>
+
+    <!-- Search Fragment -->
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.uts_lec_map.SearchFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_searchFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_historyFragment"
+            app:destination="@id/historyFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_detailBookFragment"
+            app:destination="@id/detailBookFragment" />
+    </fragment>
+
+    <!-- History Fragment -->
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.example.uts_lec_map.HistoryFragment"
+        android:label="History"
+        tools:layout="@layout/fragment_history">
+        <action
+            android:id="@+id/action_historyFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_historyFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_historyFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+
+    <!-- Profile Fragment -->
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.uts_lec_map.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profileFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_historyFragment"
+            app:destination="@id/historyFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/detailBookFragment"
+        android:name="com.example.uts_lec_map.DetailBookFragment"
+        android:label="Detail Book"
+        tools:layout="@layout/fragment_detail_book">
+        <argument
+            android:name="book"
+            app:argType="com.example.uts_lec_map.models.Book" />
+        <action
+            android:id="@+id/action_detailBookFragment_to_readFragment"
+            app:destination="@id/readFragment" />
     </fragment>
 </navigation>
 
