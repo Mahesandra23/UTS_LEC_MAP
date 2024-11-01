@@ -1,47 +1,110 @@
 package com.example.uts_lec_map
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.uts_lec_map.databinding.FragmentProfileBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import java.io.ByteArrayOutputStream
 
 class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
-    private var isEditing = false // Track if the user is in edit mode
+    private var isEditing = false
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
     private lateinit var userId: String
+    private lateinit var storage: FirebaseStorage
+    private var imageUri: Uri? = null
+
+    private val galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            imageUri = result.data?.data
+            binding.profileImage.setImageURI(imageUri)
+            uploadImageToFirebase(imageUri)
+        }
+    }
+
+    private val cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val photo: Bitmap = result.data?.extras?.get("data") as Bitmap
+            binding.profileImage.setImageBitmap(photo)
+            uploadImageToFirebase(photo)
+        }
+    }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
-
-        // Initialize Firebase Auth and Database
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().getReference("users")
+        storage = FirebaseStorage.getInstance()
         userId = auth.currentUser?.uid.toString()
 
-        // Set up Bottom Navigation
         setupBottomNavigation()
-
-        // Load user profile data from Firebase
         loadUserProfile()
 
-        // Set up Edit Profile Button functionality
+        binding.profileImage.setOnClickListener { showImageOptions() }
         setupEditProfileButton()
 
         return binding.root
+    }
+
+    private fun showImageOptions() {
+        val options = arrayOf("Choose from Gallery", "Capture with Camera")
+        val builder = android.app.AlertDialog.Builder(context)
+        builder.setTitle("Choose Profile Image")
+        builder.setItems(options) { _, which ->
+            when (which) {
+                0 -> selectImageFromGallery()
+                1 -> openCamera()
+            }
+        }
+        builder.show()
+    }
+
+    private fun selectImageFromGallery() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        galleryLauncher.launch(intent)
+    }
+
+    private fun openCamera() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            cameraLauncher.launch(intent)
+        } else {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA), 102)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 102 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            openCamera()
+        } else {
+            Toast.makeText(context, "Camera permission is required to capture profile photo", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setupBottomNavigation() {
@@ -69,19 +132,23 @@ class ProfileFragment : Fragment() {
     }
 
     private fun loadUserProfile() {
-        // Get user data from Firebase
         database.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     val name = snapshot.child("name").value.toString()
                     val email = snapshot.child("email").value.toString()
                     val phone = snapshot.child("phone").value.toString()
-                    val dateOfBirth = snapshot.child("dateOfBirth").value.toString()
+                    val profileImageUrl = snapshot.child("profileImageUrl").value.toString()
 
-                    // Set user data to views
                     binding.usernameEditText.setText(name)
                     binding.emailEditText.setText(email)
                     binding.phoneEditText.setText(phone)
+
+                    if (profileImageUrl.isNotEmpty()) {
+                        Glide.with(this@ProfileFragment)
+                            .load(profileImageUrl)
+                            .into(binding.profileImage)
+                    }
                 } else {
                     Toast.makeText(context, "User data not found", Toast.LENGTH_SHORT).show()
                 }
@@ -95,22 +162,19 @@ class ProfileFragment : Fragment() {
 
     private fun setupEditProfileButton() {
         binding.editProfileButton.setOnClickListener {
-            isEditing = !isEditing // Toggle editing mode
+            isEditing = !isEditing
 
             if (isEditing) {
-                // Change to edit mode
                 enableEditing(true)
                 binding.saveButton.visibility = View.VISIBLE
                 binding.editProfileButton.text = "Cancel"
             } else {
-                // Change to view mode
                 enableEditing(false)
                 binding.saveButton.visibility = View.GONE
                 binding.editProfileButton.text = "Edit Profile"
             }
         }
 
-        // Save button functionality
         binding.saveButton.setOnClickListener {
             saveUserProfile()
         }
@@ -127,7 +191,6 @@ class ProfileFragment : Fragment() {
         val email = binding.emailEditText.text.toString()
         val phone = binding.phoneEditText.text.toString()
 
-        // Update user data in Firebase
         val userUpdates = mapOf(
             "name" to name,
             "email" to email,
@@ -144,6 +207,37 @@ class ProfileFragment : Fragment() {
             } else {
                 Toast.makeText(context, "Failed to update profile", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    private fun uploadImageToFirebase(uri: Uri?) {
+        uri?.let {
+            val storageRef: StorageReference = storage.reference.child("profile_images/$userId.jpg")
+            storageRef.putFile(it).addOnSuccessListener {
+                storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                    database.child(userId).child("profileImageUrl").setValue(downloadUri.toString())
+                    Toast.makeText(context, "Profile image updated successfully", Toast.LENGTH_SHORT).show()
+                }
+            }.addOnFailureListener {
+                Toast.makeText(context, "Failed to upload image", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun uploadImageToFirebase(bitmap: Bitmap) {
+        val storageRef: StorageReference = storage.reference.child("profile_images/$userId.jpg")
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data = baos.toByteArray()
+        baos.close()
+
+        storageRef.putBytes(data).addOnSuccessListener {
+            storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                database.child(userId).child("profileImageUrl").setValue(downloadUri.toString())
+                Toast.makeText(context, "Profile image updated successfully", Toast.LENGTH_SHORT).show()
+            }
+        }.addOnFailureListener {
+            Toast.makeText(context, "Failed to upload image", Toast.LENGTH_SHORT).show()
         }
     }
 

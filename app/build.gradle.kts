@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.database)
     implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.storage.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -63,4 +64,6 @@ dependencies {
     implementation("com.github.bumptech.glide:compiler:4.12.0") // Ubah annotationProcessor menjadi kapt
     implementation("com.google.firebase:firebase-auth:21.0.6")
     implementation("com.google.firebase:firebase-database:20.0.5")
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+
 }
