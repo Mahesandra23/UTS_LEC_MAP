@@ -33,16 +33,10 @@ class AdminFragment : Fragment() {
 
         // Menambahkan listener untuk TextView
         val addBookTextView = view.findViewById<TextView>(R.id.add_book1)
-        val editBookTextView = view.findViewById<TextView>(R.id.edit_book)
 
         addBookTextView.setOnClickListener {
             // Navigasi ke fragment atau activity untuk menambah buku
             findNavController().navigate(R.id.action_adminFragment_to_addBookFragment) // ganti sesuai dengan ID action yang sesuai
-        }
-
-        editBookTextView.setOnClickListener {
-            // Navigasi ke fragment atau activity untuk mengedit buku
-            findNavController().navigate(R.id.action_adminFragment_to_editBookFragment) // ganti sesuai dengan ID action yang sesuai
         }
 
         return view

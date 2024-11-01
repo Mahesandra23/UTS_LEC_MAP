@@ -13,15 +13,15 @@ import com.bumptech.glide.Glide
 import com.example.uts_lec_map.R
 import com.example.uts_lec_map.models.Book
 
-class BookAdapter(private val context: Context, private val bookList: List<Book>) :
-    RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
+class ListBookAdapter(private val context: Context, private val bookList: List<Book>) :
+    RecyclerView.Adapter<ListBookAdapter.ListBookViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListBookViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.book_item, parent, false)
-        return BookViewHolder(view)
+        return ListBookViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ListBookViewHolder, position: Int) {
         val book = bookList[position]
         holder.bind(book)
     }
@@ -30,8 +30,7 @@ class BookAdapter(private val context: Context, private val bookList: List<Book>
         return bookList.size
     }
 
-    // BookAdapter.kt
-    inner class BookViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ListBookViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val bookCover: ImageView = itemView.findViewById(R.id.book_cover)
         private val bookTitle: TextView = itemView.findViewById(R.id.book_title)
         private val bookAuthor: TextView = itemView.findViewById(R.id.book_author)
@@ -42,21 +41,18 @@ class BookAdapter(private val context: Context, private val bookList: List<Book>
             bookAuthor.text = book.penulis
             bookPrice.text = "Rp ${book.harga}"
 
-            // Memuat gambar menggunakan Glide
+            // Load the book cover image
             Glide.with(context)
                 .load(book.cover)
                 .into(bookCover)
 
-            // Menambahkan listener pada itemView untuk navigasi ke DetailBookFragment
+            // Set an OnClickListener to navigate to EditBookFragment
             itemView.setOnClickListener {
-                // Menggunakan judul buku untuk navigasi
                 val bundle = Bundle().apply {
-                    putString("bookTitle", book.judul) // Menggunakan judul sebagai pengganti ID
+                    putParcelable("bookData", book) // Pass the book object
                 }
-                //it.findNavController().navigate(R.id.detailBookFragment, bundle)
+                it.findNavController().navigate(R.id.action_listBookFragment_to_editBookFragment, bundle) // Navigate to EditBookFragment
             }
         }
     }
-
-
 }

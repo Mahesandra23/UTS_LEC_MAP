@@ -45,19 +45,6 @@
             android:clickable="true"
             android:focusable="true" />
 
-        <TextView
-            android:id="@+id/edit_book"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/border_background"
-            android:drawableStart="@drawable/ic_edit_book"
-            android:text="Edit Buku"
-            android:textSize="23sp"
-            android:textStyle="bold"
-            android:padding="60dp"
-            android:gravity="center"
-            android:clickable="true"
-            android:focusable="true" />
 
 
     </LinearLayout>

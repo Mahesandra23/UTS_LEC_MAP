@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.uts_lec_map.adapters.BookAdapter
+import com.example.uts_lec_map.adapters.ListBookAdapter
 import com.example.uts_lec_map.databinding.FragmentListBookBinding
 import com.example.uts_lec_map.models.Book
 import com.google.firebase.database.*
@@ -17,7 +17,7 @@ class ListBookFragment : Fragment() {
     private var _binding: FragmentListBookBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var bookAdapter: BookAdapter
+    private lateinit var bookAdapter: ListBookAdapter // Declare bookAdapter
     private var bookList: MutableList<Book> = mutableListOf()
     private lateinit var bookDatabase: DatabaseReference
 
@@ -32,7 +32,7 @@ class ListBookFragment : Fragment() {
 
         setupRecyclerView()    // Setup RecyclerView
         setupBottomNavigation() // Setup Bottom Navigation
-        setupSearchFunctionality() // Pastikan ini dipanggil
+        setupSearchFunctionality() // Setup Search Functionality
 
         // Fetch books from Firebase
         getBooksFromFirebase()
@@ -40,9 +40,8 @@ class ListBookFragment : Fragment() {
         return binding.root
     }
 
-    // Setup RecyclerView with BookAdapter
     private fun setupRecyclerView() {
-        bookAdapter = BookAdapter(requireContext(), bookList) // Initialize BookAdapter with empty list
+        bookAdapter = ListBookAdapter(requireContext(), bookList) // Initialize bookAdapter here
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = bookAdapter
     }
@@ -88,11 +87,11 @@ class ListBookFragment : Fragment() {
             bookList // Show all books if query is empty
         } else {
             bookList.filter { book ->
-                book.judul.contains(query, ignoreCase = true) // Memfilter berdasarkan judul
+                book.judul.contains(query, ignoreCase = true) // Filter based on title
             }
         }
-        bookAdapter = BookAdapter(requireContext(), filteredBooks) // Buat adapter baru dengan daftar yang difilter
-        binding.recyclerView.adapter = bookAdapter // Set adapter baru ke RecyclerView
+        bookAdapter = ListBookAdapter(requireContext(), filteredBooks) // Create new adapter with filtered list
+        binding.recyclerView.adapter = bookAdapter // Set new adapter to RecyclerView
     }
 
     // Get all books from Firebase

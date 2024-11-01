@@ -20,18 +20,25 @@
 
         <action
             android:id="@+id/action_adminFragment_to_bookListFragment"
-            app:destination="@id/bookListFragment" />
+            app:destination="@id/listBookFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/bookListFragment"
+        android:id="@+id/listBookFragment"
         android:name="com.example.uts_lec_map.ListBookFragment"
         android:label="List Book"
-        tools:layout="@layout/fragment_list_book" >
-    <action
-        android:id="@+id/action_listBookFragment_to_adminFragment"
-        app:destination="@id/AdminFragment" />
+        tools:layout="@layout/fragment_list_book">
+
+        <action
+            android:id="@+id/action_listBookFragment_to_adminFragment"
+            app:destination="@id/AdminFragment" />
+
+        <!-- Add this action for navigating to the edit book fragment -->
+        <action
+            android:id="@+id/action_listBookFragment_to_editBookFragment"
+            app:destination="@id/editBookFragment" />
     </fragment>
+
 
 
 
@@ -44,6 +51,9 @@
         <action
             android:id="@+id/action_editBookFragment_to_adminFragment"
             app:destination="@id/AdminFragment" />
+        <action
+            android:id="@+id/action_editBookFragment_to_listBookFragment"
+            app:destination="@id/listBookFragment" />
     </fragment>
 
 
