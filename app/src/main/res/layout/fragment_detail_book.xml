@@ -29,7 +29,11 @@
             android:src="@drawable/baseline_arrow_back_24"
             android:contentDescription="Back"
             android:layout_gravity="start|top"
-            android:layout_margin="16dp" />
+            android:layout_margin="16dp"
+            android:padding="8dp"
+            android:background="@drawable/circle_background"
+            android:scaleType="fitCenter"
+            android:elevation="4dp" />
 
         <!-- Container for Title, Buy Button and synopsis -->
         <androidx.cardview.widget.CardView
