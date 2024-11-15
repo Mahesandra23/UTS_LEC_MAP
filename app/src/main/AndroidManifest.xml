@@ -2,8 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Declare storage permission outside of the application tag -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- Permissions -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
 
     <application
         android:allowBackup="true"
@@ -14,7 +22,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.UTS_LEC_MAP"
+        android:requestLegacyExternalStorage="true"
         tools:targetApi="31">
+
+        <!-- Main Activity -->
 
         <activity
             android:name=".MainActivity"
@@ -25,7 +36,7 @@
             </intent-filter>
         </activity>
 
-        <!-- Declare additional activities here, such as SearchPage -->
+        <!-- Tambahkan activity SearchPage di sini -->
         <activity
             android:name=".SearchPage"
             android:exported="true"/>
