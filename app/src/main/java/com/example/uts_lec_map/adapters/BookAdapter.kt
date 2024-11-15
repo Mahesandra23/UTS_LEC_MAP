@@ -12,9 +12,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.uts_lec_map.R
 import com.example.uts_lec_map.models.Book
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 
 class BookAdapter(private val context: Context, private val bookList: List<Book>) :
     RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
+
+    private val paymentDatabase: DatabaseReference =
+        FirebaseDatabase.getInstance().getReference("payments")
+    private val userId: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.book_item, parent, false)
@@ -30,7 +36,6 @@ class BookAdapter(private val context: Context, private val bookList: List<Book>
         return bookList.size
     }
 
-    // BookAdapter.kt
     inner class BookViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val bookCover: ImageView = itemView.findViewById(R.id.book_cover)
         private val bookTitle: TextView = itemView.findViewById(R.id.book_title)
@@ -40,23 +45,51 @@ class BookAdapter(private val context: Context, private val bookList: List<Book>
         fun bind(book: Book) {
             bookTitle.text = book.judul
             bookAuthor.text = book.penulis
-            bookPrice.text = "Rp ${book.harga}"
+            bookPrice.text = if (book.harga == 0) "Gratis" else "Rp ${book.harga}"
 
             // Memuat gambar menggunakan Glide
             Glide.with(context)
                 .load(book.cover)
                 .into(bookCover)
 
-            // Menambahkan listener pada itemView untuk navigasi ke DetailBookFragment
-            itemView.setOnClickListener {
-                // Menggunakan judul buku untuk navigasi
-                val bundle = Bundle().apply {
-                    putString("bookTitle", book.judul) // Menggunakan judul sebagai pengganti ID
+            // Listener untuk navigasi berdasarkan status pembelian
+            checkIfBookPurchased(book) { isPurchased ->
+                itemView.setOnClickListener {
+                    if (isPurchased) {
+                        // Navigasi ke ReadFragment jika buku sudah dibeli
+                        val bundle = Bundle().apply {
+                            putParcelable("bookDetails", book)
+                        }
+                        it.findNavController().navigate(R.id.readFragment, bundle)
+                    } else {
+                        // Navigasi ke DetailBookFragment jika buku belum dibeli
+                        val bundle = Bundle().apply {
+                            putString("bookTitle", book.judul)
+                        }
+                        it.findNavController().navigate(R.id.detailBookFragment, bundle)
+                    }
                 }
-                it.findNavController().navigate(R.id.detailBookFragment, bundle)
             }
         }
+
+        private fun checkIfBookPurchased(book: Book, callback: (Boolean) -> Unit) {
+            paymentDatabase.orderByChild("userId").equalTo(userId)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            val purchasedBooks = snapshot.children.mapNotNull {
+                                it.child("judul").value as? String
+                            }
+                            callback(book.judul in purchasedBooks) // Buku sudah dibeli?
+                        } else {
+                            callback(false) // Tidak ada pembelian tercatat
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        callback(false) // Asumsi gagal mengecek sebagai belum dibeli
+                    }
+                })
+        }
     }
-
-
 }
