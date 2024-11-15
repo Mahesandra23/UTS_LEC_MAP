@@ -53,7 +53,7 @@ class BookAdapter(private val context: Context, private val bookList: List<Book>
                 val bundle = Bundle().apply {
                     putString("bookTitle", book.judul) // Menggunakan judul sebagai pengganti ID
                 }
-                //it.findNavController().navigate(R.id.detailBookFragment, bundle)
+                it.findNavController().navigate(R.id.detailBookFragment, bundle)
             }
         }
     }
