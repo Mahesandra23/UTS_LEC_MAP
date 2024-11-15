@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.uts_lec_map.adapters.BookAdapter
 import com.example.uts_lec_map.databinding.FragmentSearchBinding
@@ -42,10 +43,15 @@ class SearchFragment : Fragment() {
 
     // Setup RecyclerView with BookAdapter
     private fun setupRecyclerView() {
-        bookAdapter = BookAdapter(requireContext(), bookList) // Inisialisasi BookAdapter dengan list kosong
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        // Menggunakan GridLayoutManager untuk membuat 2 kolom
+        val gridLayoutManager = GridLayoutManager(requireContext(), 3)
+        binding.recyclerView.layoutManager = gridLayoutManager
+
+        // Inisialisasi adapter
+        bookAdapter = BookAdapter(requireContext(), bookList)
         binding.recyclerView.adapter = bookAdapter
     }
+
 
     // Setup Bottom Navigation to navigate between fragments
     private fun setupBottomNavigation() {
