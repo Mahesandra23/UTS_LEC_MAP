@@ -22,15 +22,12 @@ class BookAdapter(private val context: Context, private val bookList: List<Book>
     }
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
-        val book = bookList[position]
-        holder.bind(book)
+        val book = bookList[position] // Perbaikan nama variabel
+        holder.bind(book) // Gunakan metode bind untuk mempermudah logika
     }
 
-    override fun getItemCount(): Int {
-        return bookList.size
-    }
+    override fun getItemCount(): Int = bookList.size
 
-    // BookAdapter.kt
     inner class BookViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val bookCover: ImageView = itemView.findViewById(R.id.book_cover)
         private val bookTitle: TextView = itemView.findViewById(R.id.book_title)
@@ -44,19 +41,16 @@ class BookAdapter(private val context: Context, private val bookList: List<Book>
 
             // Memuat gambar menggunakan Glide
             Glide.with(context)
-                .load(book.cover)
+                .load(book.cover) // Perbaiki jika properti gambar bernama `gambarUrl`
                 .into(bookCover)
 
             // Menambahkan listener pada itemView untuk navigasi ke DetailBookFragment
             itemView.setOnClickListener {
-                // Menggunakan judul buku untuk navigasi
                 val bundle = Bundle().apply {
-                    putString("bookTitle", book.judul) // Menggunakan judul sebagai pengganti ID
+                    putString("bookTitle", book.judul) // Menggunakan judul untuk navigasi
                 }
                 it.findNavController().navigate(R.id.detailBookFragment, bundle)
             }
         }
     }
-
-
 }
