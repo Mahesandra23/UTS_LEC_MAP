@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.uts_lec_map.adapters.BookAdapter
 import com.example.uts_lec_map.adapters.BookForReadAdapter
@@ -36,6 +37,7 @@ class HistoryFragment : Fragment() {
 
         setupRecyclerView()
         fetchPurchasedBooks()
+        setupBottomNavigation()
 
         return binding.root
     }
@@ -88,6 +90,30 @@ class HistoryFragment : Fragment() {
                         // Handle error
                     }
                 })
+        }
+    }
+
+    private fun setupBottomNavigation() {
+        val bottomNavigationView = binding.bottomNavigation
+        bottomNavigationView.selectedItemId = R.id.history
+        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.home -> {
+                    findNavController().navigate(R.id.action_historyFragment_to_homeFragment)
+                    true
+                }
+                R.id.search -> {
+                    findNavController().navigate(R.id.action_historyFragment_to_searchFragment)
+                    true
+                }
+                R.id.history ->
+                    true
+                R.id.profile -> {
+                    findNavController().navigate(R.id.action_historyFragment_to_profileFragment)
+                    true
+                }
+                else -> false
+            }
         }
     }
 
