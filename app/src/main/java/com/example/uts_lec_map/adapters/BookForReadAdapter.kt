@@ -13,8 +13,8 @@ import com.bumptech.glide.Glide
 import com.example.uts_lec_map.R
 import com.example.uts_lec_map.models.Book
 
-class BookAdapter(private val context: Context, private val bookList: List<Book>) :
-    RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
+class BookForReadAdapter(private val context: Context, private val bookList: List<Book>) :
+    RecyclerView.Adapter<BookForReadAdapter.BookViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.book_item, parent, false)
@@ -30,7 +30,6 @@ class BookAdapter(private val context: Context, private val bookList: List<Book>
         return bookList.size
     }
 
-    // BookAdapter.kt
     inner class BookViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val bookCover: ImageView = itemView.findViewById(R.id.book_cover)
         private val bookTitle: TextView = itemView.findViewById(R.id.book_title)
@@ -47,16 +46,14 @@ class BookAdapter(private val context: Context, private val bookList: List<Book>
                 .load(book.cover)
                 .into(bookCover)
 
-            // Menambahkan listener pada itemView untuk navigasi ke DetailBookFragment
+            // Menambahkan listener pada itemView untuk navigasi ke ReadFragment
             itemView.setOnClickListener {
-                // Menggunakan judul buku untuk navigasi
+                // Mengirim data buku ke ReadFragment
                 val bundle = Bundle().apply {
-                    putString("bookTitle", book.judul) // Menggunakan judul sebagai pengganti ID
+                    putParcelable("bookDetails", book) // Mengirim objek Book ke ReadFragment
                 }
-                it.findNavController().navigate(R.id.detailBookFragment, bundle)
+                it.findNavController().navigate(R.id.readFragment, bundle)
             }
         }
     }
-
-
 }

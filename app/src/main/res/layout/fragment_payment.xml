@@ -1,39 +1,66 @@
-<!-- fragment_payment.xml -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="#EDEDED"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/bookDetails"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Book Details"
-        android:textSize="18sp"
-        android:padding="8dp" />
+        android:orientation="vertical">
 
-    <Spinner
-        android:id="@+id/spinnerPaymentMethod"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@array/payment_methods"
-        android:layout_marginTop="16dp" />
+        <!-- Book Cover -->
+        <ImageView
+            android:id="@+id/iv_book_cover"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="Book Cover" />
 
-    <TextView
-        android:id="@+id/paymentAmount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Amount: $0.00"
-        android:layout_marginTop="16dp"
-        android:textSize="16sp" />
+        <!-- Book Title -->
+        <TextView
+            android:id="@+id/tv_book_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_marginTop="16dp"
+            android:textColor="@android:color/black" />
 
-    <!-- Checkout Button -->
-    <Button
-        android:id="@+id/btnCheckout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Checkout"
-        android:layout_marginTop="24dp" />
+        <!-- Book Price -->
+        <TextView
+            android:id="@+id/tv_book_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/black" />
 
-</LinearLayout>
+        <!-- Payment Method Spinner -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Payment Method"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:textSize="16sp"
+            android:textColor="@android:color/black" />
+
+        <Spinner
+            android:id="@+id/spinner_payment_method"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
+
+        <!-- Checkout Button -->
+        <Button
+            android:id="@+id/btn_checkout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Checkout"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/bluebuy" />
+    </LinearLayout>
+</ScrollView>

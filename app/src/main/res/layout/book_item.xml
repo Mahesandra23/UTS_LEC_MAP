@@ -46,4 +46,5 @@
         android:textSize="14sp"
         android:paddingTop="2dp" />
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>

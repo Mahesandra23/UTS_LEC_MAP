@@ -8,11 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.uts_lec_map.adapters.BannerPagerAdapter
 import com.example.uts_lec_map.adapters.BookAdapter
 import com.example.uts_lec_map.databinding.FragmentHomeBinding
 import com.example.uts_lec_map.models.Book
 import com.google.firebase.database.*
+
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
