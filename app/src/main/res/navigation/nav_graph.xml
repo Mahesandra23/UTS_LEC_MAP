@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/detailBookFragment">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/AdminFragment"
@@ -182,6 +182,9 @@
         <action
             android:id="@+id/action_detailBookFragment_to_readFragment"
             app:destination="@id/readFragment" />
+        <action
+            android:id="@+id/action_detailBookFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
         <action
             android:id="@+id/action_detailBookFragment_to_paymentFragment"
             app:destination="@id/paymentFragment">

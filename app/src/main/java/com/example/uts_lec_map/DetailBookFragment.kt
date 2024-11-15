@@ -14,8 +14,6 @@ import com.bumptech.glide.Glide
 import com.example.uts_lec_map.models.Book
 import com.google.firebase.database.*
 
-// DetailBookFragment.kt
-// DetailBookFragment.kt
 class DetailBookFragment : Fragment() {
 
     private lateinit var bookDatabase: DatabaseReference
@@ -57,6 +55,14 @@ class DetailBookFragment : Fragment() {
                                 Glide.with(requireContext())
                                     .load(book.cover)
                                     .into(bookCoverImageView)
+
+                                // Arahkan ke ReadFragment dengan mengirimkan bookTitle
+                                buyButton.setOnClickListener {
+                                    val bundle = Bundle().apply {
+                                        putString("bookTitle", book.judul)  // Sesuaikan kunci dengan yang digunakan di ReadFragment
+                                    }
+                                    findNavController().navigate(R.id.action_detailBookFragment_to_readFragment, bundle)
+                                }
                             }
                         }
                     } else {
@@ -71,16 +77,13 @@ class DetailBookFragment : Fragment() {
         } else {
             Toast.makeText(requireContext(), "Judul buku tidak ditemukan", Toast.LENGTH_SHORT).show()
         }
-        buyButton.setOnClickListener {
-            findNavController().navigate(R.id.action_detailBookFragment_to_readFragment)
-        }
+
         // Handle back button
         backButton.setOnClickListener {
             // Kembali ke halaman sebelumnya
-            requireActivity().onBackPressed()
+            findNavController().navigate(R.id.action_detailBookFragment_to_homeFragment)
         }
 
         return view
     }
 }
-
