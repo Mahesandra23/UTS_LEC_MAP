@@ -41,7 +41,6 @@
 
 
 
-
     <fragment
         android:id="@+id/editBookFragment"
         android:name="com.example.uts_lec_map.EditBookFragment"
@@ -83,9 +82,9 @@
         <argument
             android:name="isi_cerita"
             app:argType="string" />
-    <action
-        android:id="@+id/action_readFragment_to_homeFragment"
-        app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_readFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
 
 
@@ -203,11 +202,40 @@
         android:label="Detail Book"
         tools:layout="@layout/fragment_detail_book">
         <argument
-            android:name="book"
-            app:argType="com.example.uts_lec_map.models.Book" />
+            android:name="bookTitle"
+            app:argType="string" />
         <action
             android:id="@+id/action_detailBookFragment_to_readFragment"
             app:destination="@id/readFragment" />
+        <action
+            android:id="@+id/action_detailBookFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_detailBookFragment_to_paymentFragment"
+            app:destination="@id/paymentFragment">
+            <argument
+                android:name="bookId"
+                app:argType="string"
+                app:nullable="false" />
+            <argument
+                android:name="bookPrice"
+                app:argType="float"
+                app:nullable="false" />
+        </action>
+    </fragment>
+
+    <!-- Payment Fragment -->
+    <fragment
+        android:id="@+id/paymentFragment"
+        android:name="com.example.uts_lec_map.PaymentFragment"
+        android:label="Payment"
+        tools:layout="@layout/fragment_payment">
+        <argument
+            android:name="bookId"
+            app:argType="string" />
+        <argument
+            android:name="bookPrice"
+            app:argType="float" />
     </fragment>
 </navigation>
 

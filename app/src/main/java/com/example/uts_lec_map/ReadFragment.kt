@@ -4,47 +4,73 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.uts_lec_map.databinding.FragmentReadBinding
+import com.example.uts_lec_map.models.Book
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class ReadFragment : Fragment() {
-    private var _binding: FragmentReadBinding? = null
-    private val binding get() = _binding!!
+
+    private lateinit var bookDatabase: DatabaseReference
+    private lateinit var bookTitle: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentReadBinding.inflate(inflater, container, false)
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_read, container, false)
 
-        // Ambil data dari arguments
-        val judul = arguments?.getString("judul") ?: "Unknown Title"
-        val penulis = arguments?.getString("penulis") ?: "Unknown Author"
-        val isi_cerita = arguments?.getString("isi_cerita") ?: "No Content Available"
+        // Ambil judul buku dari Bundle
+        bookTitle = arguments?.getString("bookTitle") ?: ""
 
-        // Set data ke komponen UI
-        binding.bookTitle.text = judul
-        binding.bookAuthor.text = "By $penulis"
-        binding.bookCerita.text = isi_cerita // Menampilkan isi cerita
+        // Bind views
+        val storyTextView = view.findViewById<TextView>(R.id.bookCerita)
+        val backButton = view.findViewById<ImageView>(R.id.btnBack)
+        val bookTitleTextView = view.findViewById<TextView>(R.id.book_title)
 
-        return binding.root
-    }
+        // Inisialisasi Firebase
+        bookDatabase = FirebaseDatabase.getInstance().getReference("buku")
 
+        // Ambil data isi cerita dari Firebase
+        if (bookTitle.isNotEmpty()) {
+            bookDatabase.orderByChild("judul").equalTo(bookTitle).addListenerForSingleValueEvent(object :
+                ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        for (bookSnapshot in snapshot.children) {
+                            val book = bookSnapshot.getValue(Book::class.java)
+                            if (book != null) {
+                                // Set isi cerita ke TextView
+                                storyTextView.text = book.isi_cerita
+                                bookTitleTextView.text = book.judul
+                            }
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "Isi cerita tidak ditemukan", Toast.LENGTH_SHORT).show()
+                    }
+                }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        // Set up back button click listener to navigate to Home Fragment
-        binding.btnBack.setOnClickListener {
-            findNavController().navigate(R.id.action_readFragment_to_homeFragment)  // Navigate to Home fragment
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(requireContext(), "Gagal mengambil isi cerita", Toast.LENGTH_SHORT).show()
+                }
+            })
+        } else {
+            Toast.makeText(requireContext(), "Judul buku tidak ditemukan", Toast.LENGTH_SHORT).show()
         }
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        // Handle back button
+        backButton.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
+        return view
     }
 }

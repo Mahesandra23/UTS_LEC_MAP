@@ -1,0 +1,39 @@
+<!-- fragment_payment.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/bookDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Book Details"
+        android:textSize="18sp"
+        android:padding="8dp" />
+
+    <Spinner
+        android:id="@+id/spinnerPaymentMethod"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/payment_methods"
+        android:layout_marginTop="16dp" />
+
+    <TextView
+        android:id="@+id/paymentAmount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Amount: $0.00"
+        android:layout_marginTop="16dp"
+        android:textSize="16sp" />
+
+    <!-- Checkout Button -->
+    <Button
+        android:id="@+id/btnCheckout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Checkout"
+        android:layout_marginTop="24dp" />
+
+</LinearLayout>
