@@ -107,8 +107,8 @@ class HomeFragment : Fragment() {
                     if (book != null) {
                         trendingBooks.add(book) // Menambahkan semua buku ke trendingBooks
 
-                        // Kriteria untuk preferensi
-                        if (book.harga > 50000) {
+                        // Kriteria untuk preferensi (rentang harga Rp50.000 - Rp150.000)
+                        if (book.harga in 50000..150000) {
                             preferenceBooks.add(book)
                         }
                     }
@@ -123,7 +123,6 @@ class HomeFragment : Fragment() {
             }
         })
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
