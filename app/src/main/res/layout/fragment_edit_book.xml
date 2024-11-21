@@ -1,109 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp"
-    tools:context=".EditBookFragment"
-    android:id="@+id/editBookFragment">
+    android:layout_height="match_parent">
 
-    <!-- Back Button -->
-    <ImageView
-        android:id="@+id/iv_back_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/baseline_arrow_back_24"
-        android:contentDescription="Back"
-        android:layout_alignParentStart="true"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp" />
-
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Edit Book"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_toEndOf="@id/iv_back_button"
-        android:layout_alignBaseline="@id/iv_back_button"
-        android:layout_marginBottom="20dp" />
-
-    <!-- ImageView to display selected image -->
-    <ImageView
-        android:id="@+id/image_view"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_below="@id/tv_title"
-        android:layout_marginBottom="10dp"
-        android:scaleType="centerCrop"
-        android:background="@drawable/add_photo"
-        android:layout_gravity="center_horizontal"
-        android:padding="16dp" />
-
-    <Button
-        android:id="@+id/btn_select_image"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select Image"
-        android:layout_below="@id/image_view"
-        android:background="@drawable/border_background"
-        android:textColor="@color/black"
-        android:layout_marginBottom="20dp" />
-
-    <EditText
-        android:id="@+id/nama_buku"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nama Buku"
-        android:inputType="text"
-        android:padding="12dp"
-        android:layout_marginBottom="10dp"
-        android:layout_below="@id/btn_select_image" />
-
-    <EditText
-        android:id="@+id/penulis_buku"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Penulis Buku"
-        android:inputType="text"
-        android:padding="12dp"
-        android:layout_marginBottom="10dp"
-        android:layout_below="@id/nama_buku" />
-
-    <EditText
-        android:id="@+id/sinopsis"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Sinopsis"
-        android:inputType="textMultiLine"
-        android:padding="12dp"
-        android:layout_marginBottom="10dp"
-        android:minHeight="100dp"
-        android:layout_below="@id/penulis_buku" />
-
-    <EditText
-        android:id="@+id/cerita_buku"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Cerita Buku"
-        android:inputType="textMultiLine"
-        android:padding="12dp"
-        android:layout_marginBottom="10dp"
-        android:minHeight="100dp"
-        android:layout_below="@id/sinopsis" />
-
-    <!-- Save Edited Book Button -->
-    <Button
-        android:id="@+id/btn_save_edited_book"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save Edited Book"
         android:padding="16dp"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/black"
-        android:layout_below="@id/cerita_buku" />
+        android:id="@+id/editBookFragment">
 
+        <!-- Back Button -->
+        <ImageView
+            android:id="@+id/iv_back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_arrow_back_24"
+            android:contentDescription="Back"
+            android:layout_alignParentStart="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp" />
 
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit Book"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_toEndOf="@id/iv_back_button"
+            android:layout_alignBaseline="@id/iv_back_button"
+            android:layout_marginBottom="20dp" />
 
-</RelativeLayout>
+        <LinearLayout
+            android:id="@+id/image_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/tv_title"
+            android:layout_marginBottom="10dp"
+            android:gravity="center">
+
+            <!-- ImageView for the selected image (initially hidden) -->
+            <ImageView
+                android:id="@+id/image_view"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:scaleType="fitXY" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_select_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Image"
+            android:layout_below="@id/image_container"
+            android:background="@drawable/border_background"
+            android:textColor="@color/black"
+            android:layout_marginBottom="20dp" />
+
+        <EditText
+            android:id="@+id/nama_buku"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nama Buku"
+            android:inputType="text"
+            android:padding="12dp"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@id/btn_select_image" />
+
+        <EditText
+            android:id="@+id/penulis_buku"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Penulis Buku"
+            android:inputType="text"
+            android:padding="12dp"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@id/nama_buku" />
+
+        <EditText
+            android:id="@+id/harga_buku"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Harga Buku"
+            android:inputType="number"
+            android:padding="12dp"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@id/penulis_buku" />
+
+        <EditText
+            android:id="@+id/sinopsis"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Sinopsis"
+            android:inputType="textMultiLine"
+            android:padding="12dp"
+            android:layout_marginBottom="10dp"
+            android:minHeight="100dp"
+            android:layout_below="@id/harga_buku" />
+
+        <EditText
+            android:id="@+id/cerita_buku"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Cerita Buku"
+            android:inputType="textMultiLine"
+            android:padding="12dp"
+            android:layout_marginBottom="10dp"
+            android:minHeight="100dp"
+            android:layout_below="@id/sinopsis" />
+
+        <!-- Save Edited Book Button -->
+        <Button
+            android:id="@+id/btn_save_edited_book"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save Edited Book"
+            android:padding="16dp"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/black"
+            android:layout_below="@id/cerita_buku" />
+
+    </RelativeLayout>
+</ScrollView>

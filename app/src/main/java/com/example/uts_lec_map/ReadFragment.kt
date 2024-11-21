@@ -4,23 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
-import com.example.uts_lec_map.databinding.FragmentReadBinding
 import com.example.uts_lec_map.models.Book
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 
 class ReadFragment : Fragment() {
-
-    private lateinit var bookDatabase: DatabaseReference
-    private lateinit var bookTitle: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,47 +17,29 @@ class ReadFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_read, container, false)
 
-        // Ambil judul buku dari Bundle
-        bookTitle = arguments?.getString("bookTitle") ?: ""
+        // Ambil objek Book dari Bundle
+        val book = arguments?.getParcelable<Book>("bookDetails")
 
         // Bind views
-        val storyTextView = view.findViewById<TextView>(R.id.bookCerita)
-        val backButton = view.findViewById<ImageView>(R.id.btnBack)
         val bookTitleTextView = view.findViewById<TextView>(R.id.book_title)
+        val bookAuthorTextView = view.findViewById<TextView>(R.id.book_author)
+        val storyTextView = view.findViewById<TextView>(R.id.bookCerita)
+        val backButton = view.findViewById<ImageButton>(R.id.btnBack)
 
-        // Inisialisasi Firebase
-        bookDatabase = FirebaseDatabase.getInstance().getReference("buku")
+        // Cek jika book ada
+        if (book != null) {
+            bookTitleTextView.text = book.judul
+            bookAuthorTextView.text = book.penulis
+            storyTextView.text = book.isi_cerita // Sesuaikan dengan field cerita pada objek Book
 
-        // Ambil data isi cerita dari Firebase
-        if (bookTitle.isNotEmpty()) {
-            bookDatabase.orderByChild("judul").equalTo(bookTitle).addListenerForSingleValueEvent(object :
-                ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        for (bookSnapshot in snapshot.children) {
-                            val book = bookSnapshot.getValue(Book::class.java)
-                            if (book != null) {
-                                // Set isi cerita ke TextView
-                                storyTextView.text = book.isi_cerita
-                                bookTitleTextView.text = book.judul
-                            }
-                        }
-                    } else {
-                        Toast.makeText(requireContext(), "Isi cerita tidak ditemukan", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(requireContext(), "Gagal mengambil isi cerita", Toast.LENGTH_SHORT).show()
-                }
-            })
+            // Set up back button
+            backButton.setOnClickListener {
+                // Kembali ke halaman sebelumnya
+                activity?.onBackPressed()
+            }
         } else {
-            Toast.makeText(requireContext(), "Judul buku tidak ditemukan", Toast.LENGTH_SHORT).show()
-        }
-
-        // Handle back button
-        backButton.setOnClickListener {
-            requireActivity().onBackPressed()
+            // Handle jika buku tidak ditemukan
+            storyTextView.text = "Buku tidak ditemukan"
         }
 
         return view

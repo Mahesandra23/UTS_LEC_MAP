@@ -41,39 +41,55 @@ class DetailBookFragment : Fragment() {
 
         // Ambil data buku dari Firebase berdasarkan judul
         if (bookTitle.isNotEmpty()) {
-            bookDatabase.orderByChild("judul").equalTo(bookTitle).addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        for (bookSnapshot in snapshot.children) {
-                            val book = bookSnapshot.getValue(Book::class.java)
-                            if (book != null) {
-                                // Set data buku ke views
-                                bookTitleTextView.text = book.judul
-                                writerTextView.text = book.penulis
-                                synopsisTextView.text = book.sinopsis
-                                // Load cover image menggunakan Glide
-                                Glide.with(requireContext())
-                                    .load(book.cover)
-                                    .into(bookCoverImageView)
+            bookDatabase.orderByChild("judul").equalTo(bookTitle)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            for (bookSnapshot in snapshot.children) {
+                                val book = bookSnapshot.getValue(Book::class.java)
+                                if (book != null) {
+                                    // Set data buku ke views
+                                    bookTitleTextView.text = book.judul
+                                    writerTextView.text = book.penulis
+                                    synopsisTextView.text = book.sinopsis
+                                    buyButton.text = "Buy Rp. ${book.harga}" // Menampilkan harga pada tombol
 
-                                // Arahkan ke ReadFragment dengan mengirimkan bookTitle
-                                buyButton.setOnClickListener {
-                                    val bundle = Bundle().apply {
-                                        putString("bookTitle", book.judul)  // Sesuaikan kunci dengan yang digunakan di ReadFragment
+                                    // Load cover image menggunakan Glide
+                                    Glide.with(requireContext())
+                                        .load(book.cover)
+                                        .into(bookCoverImageView)
+
+                                    // Arahkan ke PaymentFragment dengan mengirimkan detail buku
+                                    buyButton.setOnClickListener {
+                                        val bundle = Bundle().apply {
+                                            putString("bookTitle", book.judul)
+                                            putInt("bookPrice", book.harga)
+                                            putString("bookCover", book.cover)
+                                        }
+                                        findNavController().navigate(
+                                            R.id.action_detailBookFragment_to_paymentFragment,
+                                            bundle
+                                        )
                                     }
-                                    findNavController().navigate(R.id.action_detailBookFragment_to_readFragment, bundle)
                                 }
                             }
+                        } else {
+                            Toast.makeText(
+                                requireContext(),
+                                "Buku tidak ditemukan",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-                    } else {
-                        Toast.makeText(requireContext(), "Buku tidak ditemukan", Toast.LENGTH_SHORT).show()
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(requireContext(), "Gagal mengambil data buku", Toast.LENGTH_SHORT).show()
-                }
-            })
+                    override fun onCancelled(error: DatabaseError) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Gagal mengambil data buku",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                })
         } else {
             Toast.makeText(requireContext(), "Judul buku tidak ditemukan", Toast.LENGTH_SHORT).show()
         }

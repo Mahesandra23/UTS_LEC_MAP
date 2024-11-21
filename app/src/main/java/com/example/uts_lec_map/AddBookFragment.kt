@@ -4,152 +4,172 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
-import androidx.fragment.app.Fragment
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.uts_lec_map.models.Book
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 
 class AddBookFragment : Fragment() {
 
-    private var selectedImageUri: Uri? = null // Changed to nullable
-    private val PICK_IMAGE_REQUEST = 1
+    private var isImageSelected = false
+    private var isAllTextFilled = false
+    private lateinit var btnSaveAddBook: Button
+    private lateinit var btnSelectImage: Button
+    private lateinit var imageView: ImageView
+    private lateinit var placeholderImage: ImageView
+    private var selectedImageUri: Uri? = null
+    private lateinit var database: DatabaseReference
+    private lateinit var storage: StorageReference
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_add_book, container, false)
+    ): View {
+        return inflater.inflate(R.layout.fragment_add_book, container, false)
+    }
 
-        val imageView = view.findViewById<ImageView>(R.id.image_view)
-        val selectImageButton = view.findViewById<Button>(R.id.btn_select_image)
-        val namaBukuEditText = view.findViewById<EditText>(R.id.nama_buku)
-        val penulisBukuEditText = view.findViewById<EditText>(R.id.penulis_buku)
-        val sinopsisEditText = view.findViewById<EditText>(R.id.sinopsis)
-        val ceritaBukuEditText = view.findViewById<EditText>(R.id.cerita_buku)
-        val addBookButton = view.findViewById<Button>(R.id.btn_add_book)
-        val backButton = view.findViewById<ImageView>(R.id.iv_back_button)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        // Set initial button color
-        addBookButton.setBackgroundColor(resources.getColor(android.R.color.darker_gray))
+        // Initialize Firebase Database and Storage
+        database = FirebaseDatabase.getInstance().getReference("buku")
+        storage = FirebaseStorage.getInstance().getReference("book_covers")
 
-        // Handle back button click
-        backButton.setOnClickListener {
-            findNavController().popBackStack()  // Navigate back
+        // Back button
+        view.findViewById<ImageView>(R.id.iv_back_button).setOnClickListener {
+            findNavController().popBackStack()
         }
 
-        // Handle image selection
-        selectImageButton.setOnClickListener {
-            openFileChooser()
+        // Initialize views
+        btnSaveAddBook = view.findViewById(R.id.btn_save_add_book)
+        btnSelectImage = view.findViewById(R.id.btn_select_image)
+        imageView = view.findViewById(R.id.image_view)
+        placeholderImage = view.findViewById(R.id.placeholder_image)
+
+        val namaBuku = view.findViewById<EditText>(R.id.nama_buku)
+        val penulisBuku = view.findViewById<EditText>(R.id.penulis_buku)
+        val sinopsis = view.findViewById<EditText>(R.id.sinopsis)
+        val ceritaBuku = view.findViewById<EditText>(R.id.cerita_buku)
+        val hargaBuku = view.findViewById<EditText>(R.id.harga_buku)
+
+        // Disable save button initially
+        btnSaveAddBook.isEnabled = false
+        btnSaveAddBook.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.grey))
+
+        // Set image selection click listener
+        btnSelectImage.setOnClickListener {
+            selectImageFromGallery()
         }
 
-        // Handle when the add book button is clicked
-        addBookButton.setOnClickListener {
-            val namaBuku = namaBukuEditText.text.toString()
-            val penulisBuku = penulisBukuEditText.text.toString()
-            val sinopsis = sinopsisEditText.text.toString()
-            val ceritaBuku = ceritaBukuEditText.text.toString()
-
-            // Check for empty fields
-            if (namaBuku.isEmpty() || penulisBuku.isEmpty() || sinopsis.isEmpty() || ceritaBuku.isEmpty() || selectedImageUri == null) {
-                Toast.makeText(
-                    activity,
-                    "Please fill out all fields and select an image",
-                    Toast.LENGTH_SHORT
-                ).show()
-
-                // Set button color to gray if any field is empty
-                addBookButton.setBackgroundColor(resources.getColor(android.R.color.darker_gray))
-            } else {
-                // Handle the addition of the book here
-                Toast.makeText(activity, "Book added successfully", Toast.LENGTH_SHORT).show()
-
-                // Clear the fields after successful addition
-                namaBukuEditText.text.clear()
-                penulisBukuEditText.text.clear()
-                sinopsisEditText.text.clear()
-                ceritaBukuEditText.text.clear()
-                imageView.setImageResource(0) // Clear the image
-
-                // Navigate to AdminFragment after the book is added
-                findNavController().navigate(R.id.action_addBookFragment_to_adminFragment)
+        // Text change listeners for all EditTexts
+        listOf(namaBuku, penulisBuku, sinopsis, ceritaBuku, hargaBuku).forEach { editText ->
+            editText.addTextChangedListener {
+                isAllTextFilled = listOf(namaBuku, penulisBuku, sinopsis, ceritaBuku, hargaBuku)
+                    .all { it.text.isNotEmpty() }
+                updateSaveButtonState()
             }
         }
 
-        // Add a text change listener to reset the button color when fields are filled
-        namaBukuEditText.addTextChangedListener { resetButtonColor(addBookButton) }
-        penulisBukuEditText.addTextChangedListener { resetButtonColor(addBookButton) }
-        sinopsisEditText.addTextChangedListener { resetButtonColor(addBookButton) }
-        ceritaBukuEditText.addTextChangedListener { resetButtonColor(addBookButton) }
-
-        // Set up the bottom navigation
-        setupBottomNavigation()
-
-        return view
-    }
-
-    private fun openFileChooser() {
-        val intent = Intent().apply {
-            type = "image/*"
-            action = Intent.ACTION_GET_CONTENT
+        // Save button action
+        btnSaveAddBook.setOnClickListener {
+            if (isImageSelected && isAllTextFilled) {
+                uploadImageToFirebaseStorage(
+                    namaBuku.text.toString(),
+                    penulisBuku.text.toString(),
+                    hargaBuku.text.toString().toInt(),
+                    sinopsis.text.toString(),
+                    ceritaBuku.text.toString()
+                )
+            } else {
+                Toast.makeText(requireContext(), "Please fill all fields and select an image.", Toast.LENGTH_SHORT).show()
+            }
         }
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST)
     }
 
+    // Method to enable image selection from gallery
+    private fun selectImageFromGallery() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(intent, REQUEST_IMAGE_PICK)
+    }
+
+    // Handle image selection result
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE_REQUEST) {
-            when (resultCode) {
-                Activity.RESULT_OK -> {
-                    data?.data?.let {
-                        selectedImageUri = it
-                        val imageView = view?.findViewById<ImageView>(R.id.image_view)
-                        imageView?.setImageURI(selectedImageUri) // Set the selected image to ImageView
+        if (requestCode == REQUEST_IMAGE_PICK && resultCode == Activity.RESULT_OK && data != null) {
+            selectedImageUri = data.data
+            if (selectedImageUri != null) {
+                imageView.setImageURI(selectedImageUri)
+                placeholderImage.visibility = View.GONE // Hide placeholder
+                imageView.visibility = View.VISIBLE // Show main image view
+                isImageSelected = true
+                updateSaveButtonState()
+            }
+        }
+    }
+
+    // Method to upload image to Firebase Storage
+    private fun uploadImageToFirebaseStorage(judul: String, penulis: String, harga: Int, sinopsis: String, isi_cerita: String) {
+        selectedImageUri?.let { uri ->
+            val imageRef = storage.child("${System.currentTimeMillis()}.jpg") // Create a unique file name
+
+            imageRef.putFile(uri)
+                .addOnSuccessListener {
+                    imageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
+                        saveBookToDatabase(judul, penulis, harga, downloadUrl.toString(), sinopsis, isi_cerita)
                     }
                 }
-                Activity.RESULT_CANCELED -> {
-                    Toast.makeText(activity, "Image selection cancelled", Toast.LENGTH_SHORT).show()
+                .addOnFailureListener {
+                    Toast.makeText(requireContext(), "Image upload failed: ${it.message}", Toast.LENGTH_SHORT).show()
                 }
-            }
         }
     }
 
-    // Function to reset button color based on fields
-    private fun resetButtonColor(addBookButton: Button) {
-        val namaBuku = view?.findViewById<EditText>(R.id.nama_buku)?.text.toString()
-        val penulisBuku = view?.findViewById<EditText>(R.id.penulis_buku)?.text.toString()
-        val sinopsis = view?.findViewById<EditText>(R.id.sinopsis)?.text.toString()
-        val ceritaBuku = view?.findViewById<EditText>(R.id.cerita_buku)?.text.toString()
+    // Method to save book details to the database
+    // Method to save book details to the database
+    private fun saveBookToDatabase(judul: String, penulis: String, harga: Int, cover: String, sinopsis: String, isi_cerita: String) {
+        val bookId = database.push().key ?: return // Generate unique ID
+        // Create the Book object with the correct types
+        val book = Book(
+            id = bookId, // Assuming you want to set the ID as well
+            judul = judul,
+            penulis = penulis,
+            harga = harga, // This is an Int
+            cover = cover, // This is a String
+            sinopsis = sinopsis,
+            isi_cerita = isi_cerita
+        )
 
-        if (namaBuku.isNotEmpty() && penulisBuku.isNotEmpty() && sinopsis.isNotEmpty() && ceritaBuku.isNotEmpty() && selectedImageUri != null) {
-            addBookButton.setBackgroundColor(resources.getColor(R.color.black)) // Set to original color
-        } else {
-            addBookButton.setBackgroundColor(resources.getColor(android.R.color.darker_gray))
-        }
+        // Save to the database
+        database.child(bookId).setValue(book)
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), "Book added successfully", Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.action_addBookFragment_to_adminFragment) // Navigate back to the admin fragment
+            }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Failed to add book: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
-    private fun setupBottomNavigation() {
-        val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation)
 
-        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.add_book -> {
-                    // Already in AddBookFragment, do nothing
-                    true
-                }
-                R.id.book_list -> {
-                    // Navigate to ListBookFragment
-                    findNavController().navigate(R.id.action_adminFragment_to_bookListFragment)
-                    true
-                }
-                else -> false
-            }
-        }
+    // Check validation of both text and image
+    private fun updateSaveButtonState() {
+        val enableButton = isAllTextFilled && isImageSelected
+        btnSaveAddBook.isEnabled = enableButton
+        val color = if (enableButton) R.color.black else R.color.grey
+        btnSaveAddBook.setBackgroundColor(ContextCompat.getColor(requireContext(), color))
+    }
+
+    companion object {
+        private const val REQUEST_IMAGE_PICK = 1
     }
 }
