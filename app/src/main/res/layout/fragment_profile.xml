@@ -68,7 +68,8 @@
                 android:layout_below="@id/phoneEditText"
                 android:layout_marginTop="16dp"
                 android:layout_centerHorizontal="true"
-                android:text="Edit Profile" />
+                android:text="Edit Profile"
+                android:backgroundTint="@color/black"/>
 
             <!-- Logout Button -->
             <Button
@@ -78,7 +79,8 @@
                 android:layout_below="@id/editProfileButton"
                 android:layout_marginTop="16dp"
                 android:layout_centerHorizontal="true"
-                android:text="Logout"/>
+                android:text="Logout"
+                android:backgroundTint="@color/black"/>
 
             <!-- Save Button -->
             <Button
