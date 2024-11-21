@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_listBookFragment_to_adminFragment"
             app:destination="@id/AdminFragment" />
+        <action
+            android:id="@+id/action_listBookFragment_to_editBookFragment"
+            app:destination="@id/editBookFragment" />
     </fragment>
 
     <fragment
@@ -118,6 +121,9 @@
         <action
             android:id="@+id/action_homeFragment_to_readFragment"
             app:destination="@id/readFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_detailBookBayarFragment"
+            app:destination="@id/detailBookBayarFragment" />
     </fragment>
 
     <fragment
@@ -137,6 +143,16 @@
         <action
             android:id="@+id/action_searchFragment_to_detailBookFragment"
             app:destination="@id/detailBookFragment" />
+            <argument
+                android:name="bookTitle"
+                app:argType="string" />
+        <action
+            android:id="@+id/action_searchFragment_to_detailBookBayarFragment"
+            app:destination="@id/detailBookBayarFragment" />
+            <argument
+                android:name="bookTitle"
+                app:argType="string" />
+
     </fragment>
 
     <fragment
@@ -197,6 +213,23 @@
                 app:argType="float"
                 app:nullable="false" />
         </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/detailBookBayarFragment"
+        android:name="com.example.uts_lec_map.DetailBookBayarFragment"
+        android:label="Detail Book Bayar"
+        tools:layout="@layout/fragment_detail_book_bayar">
+        <argument
+            android:name="bookTitle"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_detailBookBayarFragment_to_paymentFragment"
+            app:destination="@id/paymentFragment">
+        </action>
+        <action
+            android:id="@+id/action_detailBookBayarFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
 
     <!-- Payment Fragment -->

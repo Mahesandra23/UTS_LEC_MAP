@@ -9,7 +9,8 @@ data class Book(
     val harga: Int = 0,
     val cover: String = "",
     val sinopsis: String = "",
-    val isi_cerita: String = ""
+    val isi_cerita: String = "",
+    val isPurchased: Boolean = false // Tambahkan status pembelian
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         cover = parcel.readString() ?: "",

@@ -4,10 +4,10 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
-        <string-array name="payment_methods">
-            <item>OVO</item>
-            <item>GoPay</item>
-            <item>BCA</item>
-        </string-array>
+    <string-array name="payment_methods">
+        <item>OVO</item>
+        <item>GoPay</item>
+        <item>BCA</item>
+    </string-array>
 
 </resources>
