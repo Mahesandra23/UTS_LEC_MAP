@@ -1,0 +1,65 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center"
+    android:background="@android:color/background_light">
+
+    <!-- Payment success image -->
+    <ImageView
+        android:id="@+id/iv_payment_success"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/paymentsucces"
+        android:layout_marginBottom="16dp"
+        android:scaleType="centerCrop" />
+
+    <!-- Success message -->
+    <TextView
+        android:id="@+id/tv_success_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Payment Successful!"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:textColor="@color/ijobuy"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Thank you message -->
+    <TextView
+        android:id="@+id/thankyou_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="Thank you for your purchase"
+        android:textSize="14sp" />
+
+    <!-- Divider -->
+    <TextView
+        android:id="@+id/pembatas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="------------------------------------------------------------"
+        android:textSize="20dp"/>
+
+    <!-- Total price -->
+    <TextView
+        android:id="@+id/tv_book_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total: Rp. 0"
+        android:textSize="18sp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="21dp"/>
+
+    <!-- Back to home button -->
+    <Button
+        android:id="@+id/btn_back_to_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back to Home"
+        android:backgroundTint="@color/grey"
+        android:textColor="@android:color/white" />
+</LinearLayout>

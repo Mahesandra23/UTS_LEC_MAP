@@ -89,10 +89,16 @@ class PaymentFragment : Fragment() {
 
         databaseRef.child("payments").child(paymentId).setValue(paymentData)
             .addOnSuccessListener {
-                Toast.makeText(requireContext(), "Payment successful!", Toast.LENGTH_SHORT).show()
+                // Navigasi ke SuccessfulPaymentFragment
+                val bundle = Bundle().apply {
+                    putInt("bookPrice", amount)
+                }
+                findNavController().navigate(R.id.action_paymentFragment_to_successfulPaymentFragment, bundle)
             }
             .addOnFailureListener {
                 Toast.makeText(requireContext(), "Payment failed. Try again.", Toast.LENGTH_SHORT).show()
             }
     }
+
+
 }

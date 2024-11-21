@@ -236,5 +236,18 @@
         <argument
             android:name="bookPrice"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_paymentFragment_to_successfulPaymentFragment"
+            app:destination="@id/successfulPaymentFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/successfulPaymentFragment"
+        android:name="com.example.uts_lec_map.SuccessfulPaymentFragment"
+        android:label="Successful Payment">
+        <action
+            android:id="@+id/action_successfulPaymentFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+
 </navigation>
