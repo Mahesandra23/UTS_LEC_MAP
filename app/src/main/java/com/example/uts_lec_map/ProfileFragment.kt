@@ -65,20 +65,29 @@ class ProfileFragment : Fragment() {
         setupBottomNavigation()
         loadUserProfile()
 
-        binding.profileImage.setOnClickListener { showImageOptions() }
+        binding.profileImage.setOnClickListener {
+            // Only allow image change if in editing mode
+            if (isEditing) {
+                showImageOptions()
+            } else {
+                Toast.makeText(context, "You need to edit your profile first", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         setupEditProfileButton()
 
         return binding.root
     }
 
     private fun showImageOptions() {
-        val options = arrayOf("Choose from Gallery", "Capture with Camera")
+        val options = arrayOf("Choose from Gallery", "Capture with Camera", "Delete Profile Image")
         val builder = android.app.AlertDialog.Builder(context)
         builder.setTitle("Choose Profile Image")
         builder.setItems(options) { _, which ->
             when (which) {
                 0 -> selectImageFromGallery()
                 1 -> openCamera()
+                2 -> deleteProfileImage()
             }
         }
         builder.show()
@@ -144,10 +153,16 @@ class ProfileFragment : Fragment() {
                     binding.emailEditText.setText(email)
                     binding.phoneEditText.setText(phone)
 
+                    // Use Glide to load the profile image with a placeholder
                     if (profileImageUrl.isNotEmpty()) {
                         Glide.with(this@ProfileFragment)
                             .load(profileImageUrl)
+                            .placeholder(R.drawable.ic_profile_placeholder) // Placeholder image
+                            .error(R.drawable.ic_profile_placeholder) // Error image if loading fails
                             .into(binding.profileImage)
+                    } else {
+                        // If no image URL, show the default profile image
+                        binding.profileImage.setImageResource(R.drawable.ic_profile_placeholder)
                     }
                 } else {
                     Toast.makeText(context, "User data not found", Toast.LENGTH_SHORT).show()
@@ -160,7 +175,8 @@ class ProfileFragment : Fragment() {
         })
     }
 
-    private fun setupEditProfileButton() {
+
+        private fun setupEditProfileButton() {
         binding.editProfileButton.setOnClickListener {
             isEditing = !isEditing
 
@@ -191,6 +207,24 @@ class ProfileFragment : Fragment() {
         val email = binding.emailEditText.text.toString()
         val phone = binding.phoneEditText.text.toString()
 
+        // Validasi nama
+        if (name.isEmpty()) {
+            binding.usernameEditText.error = "Name cannot be empty"
+            return
+        }
+
+        // Validasi email
+        if (!isEmailValid(email)) {
+            binding.emailEditText.error = "Email must contain '@'"
+            return
+        }
+
+        // Validasi nomor telepon
+        if (!isPhoneNumberValid(phone)) {
+            binding.phoneEditText.error = "Phone number must be at least 10 digits"
+            return
+        }
+
         val userUpdates = mapOf(
             "name" to name,
             "email" to email,
@@ -209,6 +243,15 @@ class ProfileFragment : Fragment() {
             }
         }
     }
+
+    private fun isEmailValid(email: String): Boolean {
+        return email.contains("@")
+    }
+
+    private fun isPhoneNumberValid(phone: String): Boolean {
+        return phone.length >= 10 && phone.all { it.isDigit() }
+    }
+
 
     private fun uploadImageToFirebase(uri: Uri?) {
         uri?.let {
@@ -238,6 +281,24 @@ class ProfileFragment : Fragment() {
             }
         }.addOnFailureListener {
             Toast.makeText(context, "Failed to upload image", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun deleteProfileImage() {
+        val storageRef: StorageReference = storage.reference.child("profile_images/$userId.jpg")
+
+        // Delete the image from Firebase Storage
+        storageRef.delete().addOnSuccessListener {
+            // Remove the profile image URL from the Realtime Database
+            database.child(userId).child("profileImageUrl").removeValue().addOnSuccessListener {
+                Toast.makeText(context, "Profile image deleted successfully", Toast.LENGTH_SHORT).show()
+                // Optionally, reset the ImageView to a default profile image
+                binding.profileImage.setImageResource(R.drawable.ic_profile_placeholder)
+            }.addOnFailureListener {
+                Toast.makeText(context, "Failed to delete profile image from database", Toast.LENGTH_SHORT).show()
+            }
+        }.addOnFailureListener {
+            Toast.makeText(context, "Failed to delete image from storage", Toast.LENGTH_SHORT).show()
         }
     }
 
