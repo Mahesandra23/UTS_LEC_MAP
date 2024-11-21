@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.uts_lec_map.adapters.ListBookAdapter
 import com.example.uts_lec_map.databinding.FragmentListBookBinding
@@ -17,7 +18,7 @@ class ListBookFragment : Fragment() {
     private var _binding: FragmentListBookBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var bookAdapter: ListBookAdapter // Declare bookAdapter
+    private lateinit var bookAdapter: ListBookAdapter
     private var bookList: MutableList<Book> = mutableListOf()
     private lateinit var bookDatabase: DatabaseReference
 
@@ -27,46 +28,42 @@ class ListBookFragment : Fragment() {
     ): View {
         _binding = FragmentListBookBinding.inflate(inflater, container, false)
 
-        // Initialize Firebase Database
+        // Inisialisasi Firebase Database
         bookDatabase = FirebaseDatabase.getInstance().getReference("buku")
 
         setupRecyclerView()    // Setup RecyclerView
         setupBottomNavigation() // Setup Bottom Navigation
         setupSearchFunctionality() // Setup Search Functionality
 
-        // Fetch books from Firebase
+        // Ambil data dari Firebase
         getBooksFromFirebase()
 
         return binding.root
     }
 
     private fun setupRecyclerView() {
-        bookAdapter = ListBookAdapter(requireContext(), bookList) // Initialize bookAdapter here
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        val gridLayoutManager = GridLayoutManager(requireContext(), 3)
+        binding.recyclerView.layoutManager = gridLayoutManager
+
+        bookAdapter = ListBookAdapter(requireContext(), bookList)
         binding.recyclerView.adapter = bookAdapter
     }
 
-    // Setup Bottom Navigation to navigate between fragments
     private fun setupBottomNavigation() {
         val bottomNavigationView = binding.bottomNavigation
-        bottomNavigationView.selectedItemId = R.id.book_list // Mark Book List as selected
+        bottomNavigationView.selectedItemId = R.id.book_list
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.add_book -> {
                     findNavController().navigate(R.id.action_listBookFragment_to_adminFragment)
                     true
                 }
-                R.id.book_list -> {
-                    // Already in ListBookFragment
-                    true
-                }
-                // Add more cases if there are other menu items
+                R.id.book_list -> true
                 else -> false
             }
         }
     }
 
-    // Setup search functionality with SearchView
     private fun setupSearchFunctionality() {
         binding.searchBar.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -81,40 +78,33 @@ class ListBookFragment : Fragment() {
         })
     }
 
-    // Perform search and filter the book list based on the query
     private fun performSearch(query: String?) {
         val filteredBooks = if (query.isNullOrEmpty()) {
-            bookList // Show all books if query is empty
+            bookList
         } else {
-            bookList.filter { book ->
-                book.judul.contains(query, ignoreCase = true) // Filter based on title
-            }
+            bookList.filter { it.judul.contains(query, ignoreCase = true) }
         }
-        bookAdapter = ListBookAdapter(requireContext(), filteredBooks) // Create new adapter with filtered list
-        binding.recyclerView.adapter = bookAdapter // Set new adapter to RecyclerView
+        bookAdapter = ListBookAdapter(requireContext(), filteredBooks)
+        binding.recyclerView.adapter = bookAdapter
     }
 
-    // Get all books from Firebase
     private fun getBooksFromFirebase() {
         bookDatabase.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                bookList.clear() // Clear the list before adding new data
+                bookList.clear()
                 for (bookSnapshot in snapshot.children) {
                     val book = bookSnapshot.getValue(Book::class.java)
                     if (book != null) {
-                        bookList.add(book) // Add book to the list
+                        bookList.add(book)
                     }
                 }
-                bookAdapter.notifyDataSetChanged() // Notify adapter that data has changed
+                bookAdapter.notifyDataSetChanged()
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                // Handle error here if needed
-            }
+            override fun onCancelled(error: DatabaseError) {}
         })
     }
 
-    // Clean up binding when view is destroyed
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
