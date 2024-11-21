@@ -33,17 +33,30 @@
                 android:layout_margin="16dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent" />
 
-            <!-- ViewPager for banner carousel -->
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/viewPager"
+            <!-- CardView for rounded ViewPager -->
+            <!-- CardView for rounded ViewPager with padding -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/bannerCardView"
                 android:layout_width="0dp"
                 android:layout_height="200dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
                 app:layout_constraintTop_toBottomOf="@id/title_bookly"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="8dp"/>
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </androidx.cardview.widget.CardView>
+
 
             <!-- Trending section title -->
             <TextView
@@ -54,9 +67,9 @@
                 android:textStyle="bold"
                 android:textSize="18sp"
                 android:fontFamily="@font/montserrat_bold"
-                app:layout_constraintTop_toBottomOf="@id/viewPager"
+                app:layout_constraintTop_toBottomOf="@id/bannerCardView"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_margin="16dp"/>
+                android:layout_margin="16dp" />
 
             <!-- RecyclerView for trending books -->
             <androidx.recyclerview.widget.RecyclerView
@@ -65,7 +78,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/trending_label"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <!-- Section title for user preferences -->
             <TextView
@@ -78,7 +91,7 @@
                 android:fontFamily="@font/montserrat_bold"
                 app:layout_constraintTop_toBottomOf="@id/trending_recycler_view"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_margin="16dp"/>
+                android:layout_margin="16dp" />
 
             <!-- RecyclerView for books based on user preferences -->
             <androidx.recyclerview.widget.RecyclerView
@@ -87,7 +100,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/preferences_label"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

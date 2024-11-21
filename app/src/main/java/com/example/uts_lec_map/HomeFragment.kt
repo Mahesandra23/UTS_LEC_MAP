@@ -1,6 +1,8 @@
 package com.example.uts_lec_map
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -28,6 +30,9 @@ class HomeFragment : Fragment() {
     // Adapter untuk RecyclerView
     private lateinit var trendingAdapter: BookAdapter
     private lateinit var preferenceAdapter: BookAdapter
+    private lateinit var handler: Handler
+    private lateinit var runnable: Runnable
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,10 +59,23 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupViewPager() {
-        // Set banner ViewPager dengan drawable placeholder
         val bannerImages = listOf(R.drawable.banner1, R.drawable.banner2, R.drawable.banner3)
         val bannerPagerAdapter = BannerPagerAdapter(requireContext(), bannerImages)
         binding.viewPager.adapter = bannerPagerAdapter
+
+        // Handler untuk auto-scroll
+        handler = Handler(Looper.getMainLooper())
+        runnable = object : Runnable {
+            var currentPage = 0
+            override fun run() {
+                if (bannerImages.isNotEmpty()) {
+                    currentPage = (currentPage + 1) % bannerImages.size
+                    binding.viewPager.setCurrentItem(currentPage, true)
+                    handler.postDelayed(this, 5000) // Ganti halaman setiap 9 detik
+                }
+            }
+        }
+        handler.postDelayed(runnable, 9000)
     }
 
     private fun setupRecyclerViews() {
@@ -127,6 +145,7 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        handler.removeCallbacks(runnable) // Hentikan rotasi ketika fragment dihancurkan
         _binding = null
     }
 }
