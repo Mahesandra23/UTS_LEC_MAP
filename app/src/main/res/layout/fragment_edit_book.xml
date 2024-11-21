@@ -110,6 +110,17 @@
             android:minHeight="100dp"
             android:layout_below="@id/sinopsis" />
 
+        <Button
+            android:id="@+id/btn_delete_book"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete Book"
+            android:padding="16dp"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:layout_below="@id/btn_save_edited_book" />
+
+
         <!-- Save Edited Book Button -->
         <Button
             android:id="@+id/btn_save_edited_book"
