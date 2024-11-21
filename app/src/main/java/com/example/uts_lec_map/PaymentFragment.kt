@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -19,6 +20,7 @@ class PaymentFragment : Fragment() {
     private lateinit var bookPriceTextView: TextView
     private lateinit var spinnerPaymentMethod: Spinner
     private lateinit var checkoutButton: Button
+    private lateinit var cancelButton: Button // Tambahkan deklarasi untuk tombol cancel
 
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val databaseRef = FirebaseDatabase.getInstance().reference
@@ -35,6 +37,7 @@ class PaymentFragment : Fragment() {
         bookPriceTextView = view.findViewById(R.id.tv_book_price)
         spinnerPaymentMethod = view.findViewById(R.id.spinner_payment_method)
         checkoutButton = view.findViewById(R.id.btn_checkout)
+        cancelButton = view.findViewById(R.id.btn_cancel_order) // Bind tombol cancel
 
         // Get arguments
         val bookTitle = arguments?.getString("bookTitle") ?: "Unknown"
@@ -60,6 +63,11 @@ class PaymentFragment : Fragment() {
         checkoutButton.setOnClickListener {
             val selectedPaymentMethod = spinnerPaymentMethod.selectedItem.toString()
             processPayment(bookTitle, bookPrice, selectedPaymentMethod)
+        }
+
+        // Cancel button click
+        cancelButton.setOnClickListener {
+            activity?.onBackPressed()
         }
 
         return view
