@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.uts_lec_map.models.Book
@@ -25,12 +27,18 @@ class ReadFragment : Fragment() {
         val bookAuthorTextView = view.findViewById<TextView>(R.id.book_author)
         val storyTextView = view.findViewById<TextView>(R.id.bookCerita)
         val backButton = view.findViewById<ImageButton>(R.id.btnBack)
+        val scrollView = view.findViewById<ScrollView>(R.id.scrollView)
+        val btnBackToTop = view.findViewById<Button>(R.id.btnBackToTop)
 
         // Cek jika book ada
         if (book != null) {
             bookTitleTextView.text = book.judul
             bookAuthorTextView.text = book.penulis
-            storyTextView.text = book.isi_cerita // Sesuaikan dengan field cerita pada objek Book
+
+            // Format isi cerita agar lebih rapi
+            val paragraphs = book.isi_cerita.split(".") // Pisahkan berdasarkan tanda titik
+            val formattedText = paragraphs.joinToString("\n\n") { it.trim() } // Tambahkan spasi antar paragraf
+            storyTextView.text = formattedText // Set teks yang telah diformat
 
             // Set up back button
             backButton.setOnClickListener {
@@ -40,6 +48,22 @@ class ReadFragment : Fragment() {
         } else {
             // Handle jika buku tidak ditemukan
             storyTextView.text = "Buku tidak ditemukan"
+        }
+
+        // Logika untuk tombol Back to Top
+        btnBackToTop.visibility = View.GONE // Awalnya disembunyikan
+        scrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
+            // Tampilkan tombol jika pengguna scroll ke bawah
+            if (scrollY > 200) { // Adjust threshold sesuai kebutuhan
+                btnBackToTop.visibility = View.VISIBLE
+            } else {
+                btnBackToTop.visibility = View.GONE
+            }
+        }
+
+        btnBackToTop.setOnClickListener {
+            // Scroll ke atas saat tombol diklik
+            scrollView.smoothScrollTo(0, 0)
         }
 
         return view

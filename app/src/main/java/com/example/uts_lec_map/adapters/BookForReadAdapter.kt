@@ -17,7 +17,7 @@ class BookForReadAdapter(private val context: Context, private val bookList: Lis
     RecyclerView.Adapter<BookForReadAdapter.BookViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.book_item, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.item_history, parent, false)
         return BookViewHolder(view)
     }
 
@@ -35,11 +35,20 @@ class BookForReadAdapter(private val context: Context, private val bookList: Lis
         private val bookTitle: TextView = itemView.findViewById(R.id.book_title)
         private val bookAuthor: TextView = itemView.findViewById(R.id.book_author)
         private val bookPrice: TextView = itemView.findViewById(R.id.book_price)
+        private val bookSinopsis: TextView = itemView.findViewById(R.id.book_synopsis)
 
         fun bind(book: Book) {
             bookTitle.text = book.judul
             bookAuthor.text = book.penulis
             bookPrice.text = "Rp ${book.harga}"
+            bookSinopsis.text = book.sinopsis
+
+            bookSinopsis.text = if (book.sinopsis.length > 100) {
+                "${book.sinopsis.substring(0, 100)}..." // Menampilkan potongan sinopsis
+            } else {
+                book.sinopsis
+            }
+
 
             // Memuat gambar menggunakan Glide
             Glide.with(context)

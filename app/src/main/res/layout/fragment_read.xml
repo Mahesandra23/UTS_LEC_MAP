@@ -1,61 +1,83 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     android:background="@android:color/background_light">
 
-    <LinearLayout
+    <!-- ScrollView untuk konten -->
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
-        <!-- Layout Horizontal untuk Tombol Kembali dan Judul -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="start"
-        android:layout_marginBottom="8dp"> <!-- Jarak antara judul dan konten -->
+            android:orientation="vertical">
 
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:src="@drawable/baseline_arrow_back_24"
-            android:padding="8dp" />
+            <!-- Layout Horizontal untuk Tombol Kembali dan Judul -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="start"
+                android:layout_marginBottom="8dp"> <!-- Jarak antara judul dan konten -->
 
-        <TextView
-            android:id="@+id/book_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-        android:paddingStart="8dp"
-        android:fontFamily="@font/montserrat_bold" />
-    </LinearLayout>
+                <ImageButton
+                    android:id="@+id/btnBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:src="@drawable/baseline_arrow_back_24"
+                    android:padding="8dp" />
 
-    <TextView
-        android:id="@+id/book_author"
+                <TextView
+                    android:id="@+id/book_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"
+                    android:paddingStart="8dp"
+                    android:fontFamily="@font/montserrat_bold" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/book_author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="@android:color/darker_gray"
+                android:paddingTop="4dp"
+                android:fontFamily="@font/montserrat_semibold" />
+
+            <TextView
+                android:id="@+id/bookCerita"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingTop="8dp"
+                android:padding="8dp"
+                android:fontFamily="@font/montserrat_regular"
+                android:scrollbars="vertical"
+                android:background="@android:color/transparent"
+                android:justificationMode="inter_word"
+                android:lineSpacingExtra="8dp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Tombol Back to Top -->
+    <Button
+        android:id="@+id/btnBackToTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:textColor="@android:color/darker_gray"
-        android:paddingTop="4dp"
-        android:fontFamily="@font/montserrat_semibold" />
-
-    <TextView
-        android:id="@+id/bookCerita"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textColor="@android:color/black"
-        android:paddingTop="8dp"
-        android:fontFamily="@font/montserrat_regular"
-        android:scrollbars="vertical"
-        android:background="@android:color/transparent"
-        android:justificationMode="inter_word"
-    android:lineSpacingExtra="4dp"/>
-</LinearLayout>
-    </ScrollView>
+        android:text="to top"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:backgroundTint="#9c9b9d"
+        android:alpha="0.75"
+        android:textColor="@android:color/white"
+        android:visibility="gone" />
+</RelativeLayout>

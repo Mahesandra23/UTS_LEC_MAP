@@ -66,5 +66,4 @@ dependencies {
     implementation("com.google.firebase:firebase-database:20.0.5")
     implementation ("de.hdodenhof:circleimageview:3.1.0")
 
-
 }
