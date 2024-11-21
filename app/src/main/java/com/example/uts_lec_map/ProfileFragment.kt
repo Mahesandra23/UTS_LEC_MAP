@@ -11,6 +11,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -19,12 +20,16 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.uts_lec_map.databinding.FragmentProfileBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.ByteArrayOutputStream
+
 
 class ProfileFragment : Fragment() {
 
@@ -66,7 +71,6 @@ class ProfileFragment : Fragment() {
         loadUserProfile()
 
         binding.profileImage.setOnClickListener {
-            // Only allow image change if in editing mode
             if (isEditing) {
                 showImageOptions()
             } else {
@@ -75,6 +79,15 @@ class ProfileFragment : Fragment() {
         }
 
         setupEditProfileButton()
+
+        // Logout button logic
+        binding.logoutButton.setOnClickListener {
+            // Logout from Firebase
+            FirebaseAuth.getInstance().signOut()
+
+            // Navigate to login screen
+            findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
+        }
 
         return binding.root
     }
@@ -175,21 +188,29 @@ class ProfileFragment : Fragment() {
         })
     }
 
-
-        private fun setupEditProfileButton() {
+    private fun setupEditProfileButton() {
         binding.editProfileButton.setOnClickListener {
             isEditing = !isEditing
 
             if (isEditing) {
+                // Masuk ke mode editing
                 enableEditing(true)
                 binding.saveButton.visibility = View.VISIBLE
                 binding.editProfileButton.text = "Cancel"
+                binding.logoutButton.visibility = View.GONE  // Sembunyikan tombol logout saat editing
             } else {
+                // Membatalkan mode editing
                 enableEditing(false)
                 binding.saveButton.visibility = View.GONE
                 binding.editProfileButton.text = "Edit Profile"
+                binding.logoutButton.visibility = View.VISIBLE  // Tampilkan tombol logout saat tidak editing
+
+                // Muat data pengguna terbaru
+                loadUserProfile()
             }
         }
+
+
 
         binding.saveButton.setOnClickListener {
             saveUserProfile()
@@ -252,7 +273,6 @@ class ProfileFragment : Fragment() {
         return phone.length >= 10 && phone.all { it.isDigit() }
     }
 
-
     private fun uploadImageToFirebase(uri: Uri?) {
         uri?.let {
             val storageRef: StorageReference = storage.reference.child("profile_images/$userId.jpg")
@@ -272,7 +292,6 @@ class ProfileFragment : Fragment() {
         val baos = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()
-        baos.close()
 
         storageRef.putBytes(data).addOnSuccessListener {
             storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
@@ -286,21 +305,15 @@ class ProfileFragment : Fragment() {
 
     private fun deleteProfileImage() {
         val storageRef: StorageReference = storage.reference.child("profile_images/$userId.jpg")
-
-        // Delete the image from Firebase Storage
         storageRef.delete().addOnSuccessListener {
-            // Remove the profile image URL from the Realtime Database
-            database.child(userId).child("profileImageUrl").removeValue().addOnSuccessListener {
-                Toast.makeText(context, "Profile image deleted successfully", Toast.LENGTH_SHORT).show()
-                // Optionally, reset the ImageView to a default profile image
-                binding.profileImage.setImageResource(R.drawable.ic_profile_placeholder)
-            }.addOnFailureListener {
-                Toast.makeText(context, "Failed to delete profile image from database", Toast.LENGTH_SHORT).show()
-            }
+            database.child(userId).child("profileImageUrl").removeValue()
+            binding.profileImage.setImageResource(R.drawable.ic_profile_placeholder)
+            Toast.makeText(context, "Profile image deleted successfully", Toast.LENGTH_SHORT).show()
         }.addOnFailureListener {
-            Toast.makeText(context, "Failed to delete image from storage", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Failed to delete profile image", Toast.LENGTH_SHORT).show()
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
