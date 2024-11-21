@@ -62,9 +62,9 @@
         android:name="com.example.uts_lec_map.AddBookFragment"
         android:label="Add Book"
         tools:layout="@layout/fragment_add_book" >
-    <action
-        android:id="@+id/action_addBookFragment_to_adminFragment"
-        app:destination="@id/AdminFragment" />
+        <action
+            android:id="@+id/action_addBookFragment_to_adminFragment"
+            app:destination="@id/AdminFragment" />
     </fragment>
 
 
@@ -97,8 +97,8 @@
             android:id="@+id/action_loginFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
         <!-- Action menuju home frament -->
-         <action
-             android:id="@+id/action_loginFragment_to_homeFragment"
+        <action
+            android:id="@+id/action_loginFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
         <action
             android:id="@+id/action_loginFragment_to_adminFragment"
@@ -238,4 +238,3 @@
             app:argType="integer" />
     </fragment>
 </navigation>
-

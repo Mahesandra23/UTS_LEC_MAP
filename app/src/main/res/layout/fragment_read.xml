@@ -52,10 +52,11 @@
         android:textSize="16sp"
         android:textColor="@android:color/black"
         android:paddingTop="8dp"
+        android:padding="8dp"
         android:fontFamily="@font/montserrat_regular"
         android:scrollbars="vertical"
         android:background="@android:color/transparent"
         android:justificationMode="inter_word"
-    android:lineSpacingExtra="4dp"/>
+        android:lineSpacingExtra="8dp"/>
 </LinearLayout>
     </ScrollView>

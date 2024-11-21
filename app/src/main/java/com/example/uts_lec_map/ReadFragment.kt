@@ -30,7 +30,11 @@ class ReadFragment : Fragment() {
         if (book != null) {
             bookTitleTextView.text = book.judul
             bookAuthorTextView.text = book.penulis
-            storyTextView.text = book.isi_cerita // Sesuaikan dengan field cerita pada objek Book
+
+            // Format isi cerita agar lebih rapi
+            val paragraphs = book.isi_cerita.split(".") // Pisahkan berdasarkan tanda titik
+            val formattedText = paragraphs.joinToString("\n\n") { it.trim() } // Tambahkan spasi antar paragraf
+            storyTextView.text = formattedText // Set teks yang telah diformat
 
             // Set up back button
             backButton.setOnClickListener {

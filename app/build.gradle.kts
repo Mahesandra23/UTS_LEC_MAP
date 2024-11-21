@@ -18,7 +18,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -66,7 +65,5 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:21.0.6")
     implementation("com.google.firebase:firebase-database:20.0.5")
     implementation ("de.hdodenhof:circleimageview:3.1.0")
-    implementation ("androidx.navigation:navigation-safe-args-gradle-plugin:2.6.0")
-
 
 }

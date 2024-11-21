@@ -13,7 +13,6 @@ import com.example.uts_lec_map.adapters.BannerPagerAdapter
 import com.example.uts_lec_map.adapters.BookAdapter
 import com.example.uts_lec_map.databinding.FragmentHomeBinding
 import com.example.uts_lec_map.models.Book
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
 
@@ -24,14 +23,11 @@ class HomeFragment : Fragment() {
     private lateinit var trendingBooks: MutableList<Book>
     private lateinit var preferenceBooks: MutableList<Book>
     private lateinit var bookDatabase: DatabaseReference
-    private lateinit var purchaseDatabase: DatabaseReference
     private lateinit var bannerDatabase: DatabaseReference
 
     // Adapter untuk RecyclerView
     private lateinit var trendingAdapter: BookAdapter
     private lateinit var preferenceAdapter: BookAdapter
-
-    private lateinit var currentUserId: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,8 +38,6 @@ class HomeFragment : Fragment() {
         // Inisialisasi Firebase Database
         bookDatabase = FirebaseDatabase.getInstance().getReference("buku")
         bannerDatabase = FirebaseDatabase.getInstance().getReference("banner")
-        purchaseDatabase = FirebaseDatabase.getInstance().getReference("purchases")
-        currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
         // Inisialisasi list buku
         trendingBooks = mutableListOf()
@@ -60,24 +54,21 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupViewPager() {
+        // Set banner ViewPager dengan drawable placeholder
         val bannerImages = listOf(R.drawable.banner1, R.drawable.banner2, R.drawable.banner3)
         val bannerPagerAdapter = BannerPagerAdapter(requireContext(), bannerImages)
         binding.viewPager.adapter = bannerPagerAdapter
     }
 
     private fun setupRecyclerViews() {
-        binding.trendingRecyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        trendingAdapter = BookAdapter(requireContext(), trendingBooks) { bookTitle ->
-            navigateToDetail(bookTitle)
-        }
+        // Set RecyclerView untuk trending books
+        binding.trendingRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        trendingAdapter = BookAdapter(requireContext(), trendingBooks)
         binding.trendingRecyclerView.adapter = trendingAdapter
 
-        binding.preferencesRecyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        preferenceAdapter = BookAdapter(requireContext(), preferenceBooks) { bookTitle ->
-            navigateToDetail(bookTitle)
-        }
+        // Set RecyclerView untuk books berdasarkan preferensi
+        binding.preferencesRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        preferenceAdapter = BookAdapter(requireContext(), preferenceBooks)
         binding.preferencesRecyclerView.adapter = preferenceAdapter
     }
 
@@ -104,22 +95,25 @@ class HomeFragment : Fragment() {
         }
     }
 
+    // HomeFragment.kt
     private fun getBooksFromFirebase() {
         bookDatabase.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                trendingBooks.clear()
-                preferenceBooks.clear()
+                trendingBooks.clear() // Kosongkan list trending sebelum menambahkan data baru
+                preferenceBooks.clear() // Kosongkan list preference juga
 
                 for (bookSnapshot in snapshot.children) {
                     val book = bookSnapshot.getValue(Book::class.java)
                     if (book != null) {
-                        trendingBooks.add(book)
+                        trendingBooks.add(book) // Menambahkan semua buku ke trendingBooks
+
+                        // Kriteria untuk preferensi
                         if (book.harga > 50000) {
                             preferenceBooks.add(book)
                         }
                     }
                 }
-
+                // Beri tahu adapter bahwa data telah berubah
                 trendingAdapter.notifyDataSetChanged()
                 preferenceAdapter.notifyDataSetChanged()
             }
@@ -130,24 +124,6 @@ class HomeFragment : Fragment() {
         })
     }
 
-    private fun navigateToDetail(bookTitle: String) {
-        purchaseDatabase.child(currentUserId).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val purchasedBooks = snapshot.children.map { it.child("bookTitle").value.toString() }
-                val action = if (purchasedBooks.contains(bookTitle)) {
-                    R.id.action_homeFragment_to_detailBookFragment
-                } else {
-                    R.id.action_homeFragment_to_detailBookBayarFragment
-                }
-                val bundle = Bundle().apply { putString("bookTitle", bookTitle) }
-                findNavController().navigate(action, bundle)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "Gagal memeriksa pembelian.", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
