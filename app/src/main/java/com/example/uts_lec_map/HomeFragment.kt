@@ -59,7 +59,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupViewPager() {
-        val bannerImages = listOf(R.drawable.banner1, R.drawable.banner2, R.drawable.banner3)
+        val bannerImages = listOf(R.drawable.headersolev, R.drawable.headerorv, R.drawable.headerlotm)
         val bannerPagerAdapter = BannerPagerAdapter(requireContext(), bannerImages)
         binding.viewPager.adapter = bannerPagerAdapter
 
