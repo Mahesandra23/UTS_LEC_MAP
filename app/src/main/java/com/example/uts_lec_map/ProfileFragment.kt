@@ -30,46 +30,63 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.ByteArrayOutputStream
 
-
 class ProfileFragment : Fragment() {
 
+    // Binding untuk view fragment_profile.xml
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
+
+    // Menyimpan status apakah profil sedang dalam mode editing
     private var isEditing = false
+
+    // Deklarasi variabel untuk akses database dan Firebase Auth
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
     private lateinit var userId: String
     private lateinit var storage: FirebaseStorage
+
+    // Menyimpan URI gambar yang dipilih untuk diupload
     private var imageUri: Uri? = null
 
+    // Launcher untuk membuka galeri
     private val galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
+            // Mengambil data URI gambar yang dipilih
             imageUri = result.data?.data
+            // Menampilkan gambar profil yang dipilih
             binding.profileImage.setImageURI(imageUri)
+            // Mengupload gambar ke Firebase
             uploadImageToFirebase(imageUri)
         }
     }
 
+    // Launcher untuk membuka kamera
     private val cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
+            // Mengambil foto dari kamera
             val photo: Bitmap = result.data?.extras?.get("data") as Bitmap
             binding.profileImage.setImageBitmap(photo)
+            // Mengupload gambar ke Firebase
             uploadImageToFirebase(photo)
         }
     }
 
+    // Fungsi untuk membuat tampilan fragment dan menyiapkan variabel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
+        // Menghubungkan binding dengan layout
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().getReference("users")
         storage = FirebaseStorage.getInstance()
         userId = auth.currentUser?.uid.toString()
 
+        // Setup navigasi dan pengambilan data profil
         setupBottomNavigation()
         loadUserProfile()
 
+        // Menambahkan logika untuk gambar profil
         binding.profileImage.setOnClickListener {
             if (isEditing) {
                 showImageOptions()
@@ -78,48 +95,55 @@ class ProfileFragment : Fragment() {
             }
         }
 
+        // Menambahkan logika untuk tombol edit profil
         setupEditProfileButton()
 
-        // Logout button logic
+        // Logika tombol logout
         binding.logoutButton.setOnClickListener {
-            // Logout from Firebase
+            // Logout dari Firebase
             FirebaseAuth.getInstance().signOut()
 
-            // Navigate to login screen
+            // Pindah ke layar login
             findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
         }
 
         return binding.root
     }
 
+    // Menampilkan opsi untuk mengganti gambar profil
     private fun showImageOptions() {
         val options = arrayOf("Choose from Gallery", "Capture with Camera", "Delete Profile Image")
         val builder = android.app.AlertDialog.Builder(context)
         builder.setTitle("Choose Profile Image")
         builder.setItems(options) { _, which ->
             when (which) {
-                0 -> selectImageFromGallery()
-                1 -> openCamera()
-                2 -> deleteProfileImage()
+                0 -> selectImageFromGallery() // Pilih dari galeri
+                1 -> openCamera() // Ambil gambar menggunakan kamera
+                2 -> deleteProfileImage() // Hapus gambar profil
             }
         }
         builder.show()
     }
 
+    // Membuka galeri untuk memilih gambar
     private fun selectImageFromGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         galleryLauncher.launch(intent)
     }
 
+    // Membuka kamera untuk mengambil gambar
     private fun openCamera() {
+        // Memeriksa apakah izin kamera sudah diberikan
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             cameraLauncher.launch(intent)
         } else {
+            // Meminta izin kamera jika belum diberikan
             ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA), 102)
         }
     }
 
+    // Menangani hasil izin yang diminta (misalnya izin kamera)
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 102 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -129,6 +153,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    // Setup navigasi untuk bottom navigation bar
     private fun setupBottomNavigation() {
         val bottomNavigationView = binding.bottomNavigation
         bottomNavigationView.selectedItemId = R.id.profile
@@ -153,28 +178,31 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    // Memuat profil pengguna dari Firebase
     private fun loadUserProfile() {
         database.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
+                    // Mendapatkan data pengguna
                     val name = snapshot.child("name").value.toString()
                     val email = snapshot.child("email").value.toString()
                     val phone = snapshot.child("phone").value.toString()
                     val profileImageUrl = snapshot.child("profileImageUrl").value.toString()
 
+                    // Menampilkan data pada view
                     binding.usernameEditText.setText(name)
                     binding.emailEditText.setText(email)
                     binding.phoneEditText.setText(phone)
 
-                    // Use Glide to load the profile image with a placeholder
+                    // Menggunakan Glide untuk menampilkan gambar profil dari URL
                     if (profileImageUrl.isNotEmpty()) {
                         Glide.with(this@ProfileFragment)
                             .load(profileImageUrl)
-                            .placeholder(R.drawable.ic_profile_placeholder) // Placeholder image
-                            .error(R.drawable.ic_profile_placeholder) // Error image if loading fails
+                            .placeholder(R.drawable.ic_profile_placeholder) // Placeholder saat gambar sedang dimuat
+                            .error(R.drawable.ic_profile_placeholder) // Gambar error jika gagal memuat
                             .into(binding.profileImage)
                     } else {
-                        // If no image URL, show the default profile image
+                        // Jika tidak ada URL gambar, gunakan gambar profil default
                         binding.profileImage.setImageResource(R.drawable.ic_profile_placeholder)
                     }
                 } else {
@@ -188,6 +216,7 @@ class ProfileFragment : Fragment() {
         })
     }
 
+    // Setup tombol edit profil
     private fun setupEditProfileButton() {
         binding.editProfileButton.setOnClickListener {
             isEditing = !isEditing
@@ -210,31 +239,31 @@ class ProfileFragment : Fragment() {
             }
         }
 
-
-
         binding.saveButton.setOnClickListener {
-            saveUserProfile()
+            saveUserProfile() // Simpan perubahan profil
         }
     }
 
+    // Mengaktifkan atau menonaktifkan mode editing pada form input
     private fun enableEditing(enable: Boolean) {
         binding.usernameEditText.isEnabled = enable
         binding.emailEditText.isEnabled = enable
         binding.phoneEditText.isEnabled = enable
     }
 
+    // Menyimpan perubahan profil pengguna ke Firebase
     private fun saveUserProfile() {
         val name = binding.usernameEditText.text.toString()
         val email = binding.emailEditText.text.toString()
         val phone = binding.phoneEditText.text.toString()
 
-        // Validasi nama
+        // Validasi input nama
         if (name.isEmpty()) {
             binding.usernameEditText.error = "Name cannot be empty"
             return
         }
 
-        // Validasi email
+        // Validasi input email
         if (!isEmailValid(email)) {
             binding.emailEditText.error = "Email must contain '@'"
             return
@@ -265,14 +294,17 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    // Memeriksa apakah email valid
     private fun isEmailValid(email: String): Boolean {
         return email.contains("@")
     }
 
+    // Memeriksa apakah nomor telepon valid
     private fun isPhoneNumberValid(phone: String): Boolean {
         return phone.length >= 10 && phone.all { it.isDigit() }
     }
 
+    // Mengupload gambar profil ke Firebase
     private fun uploadImageToFirebase(uri: Uri?) {
         uri?.let {
             val storageRef: StorageReference = storage.reference.child("profile_images/$userId.jpg")
@@ -287,6 +319,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    // Mengupload gambar profil dari Bitmap
     private fun uploadImageToFirebase(bitmap: Bitmap) {
         val storageRef: StorageReference = storage.reference.child("profile_images/$userId.jpg")
         val baos = ByteArrayOutputStream()
@@ -303,6 +336,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    // Menghapus gambar profil
     private fun deleteProfileImage() {
         val storageRef: StorageReference = storage.reference.child("profile_images/$userId.jpg")
         storageRef.delete().addOnSuccessListener {
@@ -314,7 +348,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
-
+    // Membersihkan binding ketika fragment dihancurkan
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

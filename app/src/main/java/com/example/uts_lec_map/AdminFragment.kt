@@ -11,23 +11,29 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.widget.Button
 import com.google.firebase.auth.FirebaseAuth
 
+/**
+ * Fragment untuk fitur Admin.
+ * Berfungsi mengelola navigasi halaman untuk Admin dan menyediakan tombol logout.
+ */
 class AdminFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // Inflate layout untuk fragment ini
         val view = inflater.inflate(R.layout.fragment_admin, container, false)
 
-        // Set up bottom navigation
+        // Mengatur Bottom Navigation untuk navigasi halaman admin
         val bottomNavigationView = view.findViewById<BottomNavigationView>(R.id.admin_bottom_navigation)
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.add_book -> {
-                    // sudah di page ini
+                    // Sudah berada di halaman ini, tidak melakukan apa-apa
                     true
                 }
                 R.id.book_list -> {
+                    // Navigasi ke halaman daftar buku
                     findNavController().navigate(R.id.action_adminFragment_to_bookListFragment)
                     true
                 }
@@ -35,22 +41,24 @@ class AdminFragment : Fragment() {
             }
         }
 
-        // Set up add book TextView
+        // Mengatur TextView untuk navigasi ke halaman tambah buku
         val addBookTextView = view.findViewById<TextView>(R.id.add_book1)
         addBookTextView.setOnClickListener {
+            // Navigasi ke halaman tambah buku
             findNavController().navigate(R.id.action_adminFragment_to_addBookFragment)
         }
 
-        // Logout button logic
+        // Tombol Logout untuk keluar dari akun
         val logoutButton = view.findViewById<Button>(R.id.logoutButton)
         logoutButton.setOnClickListener {
-            // Logout from Firebase
+            // Logout dari Firebase Authentication
             FirebaseAuth.getInstance().signOut()
 
-            // Navigate to login screen
+            // Navigasi ke halaman login setelah logout
             findNavController().navigate(R.id.action_adminFragment_to_loginFragment)
         }
 
+        // Mengembalikan tampilan view fragment
         return view
     }
 }
