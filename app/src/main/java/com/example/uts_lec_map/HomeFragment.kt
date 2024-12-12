@@ -142,16 +142,24 @@ class HomeFragment : Fragment() {
                 trendingBooks.clear()
                 preferenceBooks.clear()
 
+                // Variabel untuk menghitung jumlah buku yang ditambahkan
+                var trendingCount = 0
+                var preferenceCount = 0
+
                 // Iterasi untuk setiap data buku yang ada di snapshot Firebase
                 for (bookSnapshot in snapshot.children) {
                     val book = bookSnapshot.getValue(Book::class.java)
                     if (book != null) {
-                        // Menambahkan buku ke daftar trendingBooks
-                        trendingBooks.add(book)
+                        // Menambahkan buku ke daftar trendingBooks, maksimal 10 buku
+                        if (trendingCount < 10) {
+                            trendingBooks.add(book)
+                            trendingCount++
+                        }
 
-                        // Kriteria untuk buku preferensi berdasarkan harga
-                        if (book.harga in 50000..150000) {
+                        // Kriteria untuk buku preferensi berdasarkan harga dan batas 10 buku
+                        if (book.harga in 50000..150000 && preferenceCount < 10) {
                             preferenceBooks.add(book) // Menambahkan buku ke daftar preferensi
+                            preferenceCount++
                         }
                     }
                 }
@@ -167,6 +175,7 @@ class HomeFragment : Fragment() {
             }
         })
     }
+
 
     // Fungsi ini dipanggil saat fragment dihancurkan
     override fun onDestroyView() {

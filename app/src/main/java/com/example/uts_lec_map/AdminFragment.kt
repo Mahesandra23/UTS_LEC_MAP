@@ -11,10 +11,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.widget.Button
 import com.google.firebase.auth.FirebaseAuth
 
-/**
- * Fragment untuk fitur Admin.
- * Berfungsi mengelola navigasi halaman untuk Admin dan menyediakan tombol logout.
- */
 class AdminFragment : Fragment() {
 
     override fun onCreateView(
