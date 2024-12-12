@@ -8,14 +8,18 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.widget.Button
+import com.google.firebase.auth.FirebaseAuth
 
 class AdminFragment : Fragment() {
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_admin, container, false)
 
+        // Set up bottom navigation
         val bottomNavigationView = view.findViewById<BottomNavigationView>(R.id.admin_bottom_navigation)
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
@@ -31,12 +35,20 @@ class AdminFragment : Fragment() {
             }
         }
 
-        // Menambahkan listener untuk TextView
+        // Set up add book TextView
         val addBookTextView = view.findViewById<TextView>(R.id.add_book1)
-
         addBookTextView.setOnClickListener {
-            // Navigasi ke fragment atau activity untuk menambah buku
-            findNavController().navigate(R.id.action_adminFragment_to_addBookFragment) // ganti sesuai dengan ID action yang sesuai
+            findNavController().navigate(R.id.action_adminFragment_to_addBookFragment)
+        }
+
+        // Logout button logic
+        val logoutButton = view.findViewById<Button>(R.id.logoutButton)
+        logoutButton.setOnClickListener {
+            // Logout from Firebase
+            FirebaseAuth.getInstance().signOut()
+
+            // Navigate to login screen
+            findNavController().navigate(R.id.action_adminFragment_to_loginFragment)
         }
 
         return view
