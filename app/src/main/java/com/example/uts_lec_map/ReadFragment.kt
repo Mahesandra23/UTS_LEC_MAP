@@ -13,16 +13,18 @@ import com.example.uts_lec_map.models.Book
 
 class ReadFragment : Fragment() {
 
+    // Fungsi untuk menampilkan tampilan fragment
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // Mengambil layout fragment_read.xml dan menghubungkannya dengan fragment ini
         val view = inflater.inflate(R.layout.fragment_read, container, false)
 
-        // Ambil objek Book dari Bundle
+        // Mengambil objek Book dari Bundle yang dikirimkan saat fragment ini dipanggil
         val book = arguments?.getParcelable<Book>("bookDetails")
 
-        // Bind views
+        // Menghubungkan elemen-elemen UI dengan variabel-variabel di dalam kode
         val bookTitleTextView = view.findViewById<TextView>(R.id.book_title)
         val bookAuthorTextView = view.findViewById<TextView>(R.id.book_author)
         val storyTextView = view.findViewById<TextView>(R.id.bookCerita)
@@ -30,42 +32,47 @@ class ReadFragment : Fragment() {
         val scrollView = view.findViewById<ScrollView>(R.id.scrollView)
         val btnBackToTop = view.findViewById<Button>(R.id.btnBackToTop)
 
-        // Cek jika book ada
+        // Memeriksa apakah objek 'book' ada (tidak null)
         if (book != null) {
-            bookTitleTextView.text = book.judul
-            bookAuthorTextView.text = book.penulis
+            // Menampilkan informasi dari objek 'book' ke tampilan UI
+            bookTitleTextView.text = book.judul // Menampilkan judul buku
+            bookAuthorTextView.text = book.penulis // Menampilkan penulis buku
 
-            // Format isi cerita agar lebih rapi
-            val paragraphs = book.isi_cerita.split(".") // Pisahkan berdasarkan tanda titik
-            val formattedText = paragraphs.joinToString("\n\n") { it.trim() } // Tambahkan spasi antar paragraf
-            storyTextView.text = formattedText // Set teks yang telah diformat
+            // Memformat isi cerita agar lebih rapi
+            val paragraphs = book.isi_cerita.split(".") // Memisahkan isi cerita berdasarkan tanda titik (.)
+            val formattedText = paragraphs.joinToString("\n\n") { it.trim() } // Menambahkan spasi antar paragraf
+            storyTextView.text = formattedText // Menampilkan teks yang telah diformat
 
-            // Set up back button
+            // Menangani klik pada tombol 'back' untuk kembali ke halaman sebelumnya
             backButton.setOnClickListener {
-                // Kembali ke halaman sebelumnya
+                // Fungsi untuk kembali ke fragment atau aktivitas sebelumnya
                 activity?.onBackPressed()
             }
         } else {
-            // Handle jika buku tidak ditemukan
+            // Jika objek book tidak ditemukan, menampilkan pesan error
             storyTextView.text = "Buku tidak ditemukan"
         }
 
-        // Logika untuk tombol Back to Top
-        btnBackToTop.visibility = View.GONE // Awalnya disembunyikan
+        // Logika untuk tombol 'Back to Top'
+        btnBackToTop.visibility = View.GONE // Tombol ini disembunyikan pada awalnya
+
+        // Mengatur listener untuk mendeteksi pergerakan scroll pada ScrollView
         scrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
-            // Tampilkan tombol jika pengguna scroll ke bawah
-            if (scrollY > 200) { // Adjust threshold sesuai kebutuhan
+            // Menampilkan tombol 'Back to Top' saat scroll lebih dari 200px
+            if (scrollY > 200) { // Threshold scroll
                 btnBackToTop.visibility = View.VISIBLE
             } else {
                 btnBackToTop.visibility = View.GONE
             }
         }
 
+        // Menangani klik pada tombol 'Back to Top' untuk menggulir halaman ke atas
         btnBackToTop.setOnClickListener {
-            // Scroll ke atas saat tombol diklik
+            // Menggerakkan scroll ke posisi paling atas
             scrollView.smoothScrollTo(0, 0)
         }
 
+        // Mengembalikan tampilan fragment ini
         return view
     }
 }

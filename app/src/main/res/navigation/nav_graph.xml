@@ -21,6 +21,10 @@
         <action
             android:id="@+id/action_adminFragment_to_bookListFragment"
             app:destination="@id/listBookFragment" />
+
+        <action
+            android:id="@+id/action_adminFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
 
     <fragment

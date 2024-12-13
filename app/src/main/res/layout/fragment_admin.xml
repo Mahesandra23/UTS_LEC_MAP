@@ -18,6 +18,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Logout Button -->
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:textSize="12sp"
+        android:padding="-5dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginTop="-5dp"
+        android:backgroundTint="@color/black"
+        app:layout_constraintTop_toTopOf="@id/title_bookly"
+        app:layout_constraintEnd_toStartOf="@id/title_bookly" />
+
+
+
+
     <!-- Container for Add and Edit Book -->
     <LinearLayout
         android:layout_width="wrap_content"
@@ -49,6 +66,7 @@
 
     </LinearLayout>
 
+
     <!-- Bottom Navigation for Admin options -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/admin_bottom_navigation"
@@ -60,4 +78,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:menu="@menu/admin_bottom_nav_menu" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

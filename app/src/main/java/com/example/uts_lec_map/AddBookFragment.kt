@@ -21,13 +21,22 @@ import com.google.firebase.storage.StorageReference
 
 class AddBookFragment : Fragment() {
 
+    // Variabel untuk melacak apakah gambar sudah dipilih
     private var isImageSelected = false
+
+    // Variabel untuk melacak apakah semua input teks sudah diisi
     private var isAllTextFilled = false
+
+    // Deklarasi variabel tombol dan tampilan
     private lateinit var btnSaveAddBook: Button
     private lateinit var btnSelectImage: Button
     private lateinit var imageView: ImageView
     private lateinit var placeholderImage: ImageView
+
+    // Variabel untuk menyimpan URI gambar yang dipilih
     private var selectedImageUri: Uri? = null
+
+    // Referensi ke Firebase Database dan Storage
     private lateinit var database: DatabaseReference
     private lateinit var storage: StorageReference
 
@@ -35,52 +44,54 @@ class AddBookFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Menghubungkan fragment dengan layout
         return inflater.inflate(R.layout.fragment_add_book, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize Firebase Database and Storage
+        // Inisialisasi Firebase Database dan Storage
         database = FirebaseDatabase.getInstance().getReference("buku")
         storage = FirebaseStorage.getInstance().getReference("book_covers")
 
-        // Back button
+        // Tombol untuk kembali ke halaman sebelumnya
         view.findViewById<ImageView>(R.id.iv_back_button).setOnClickListener {
             findNavController().popBackStack()
         }
 
-        // Initialize views
+        // Inisialisasi elemen UI
         btnSaveAddBook = view.findViewById(R.id.btn_save_add_book)
         btnSelectImage = view.findViewById(R.id.btn_select_image)
         imageView = view.findViewById(R.id.image_view)
         placeholderImage = view.findViewById(R.id.placeholder_image)
 
+        // EditText untuk input data buku
         val namaBuku = view.findViewById<EditText>(R.id.nama_buku)
         val penulisBuku = view.findViewById<EditText>(R.id.penulis_buku)
         val sinopsis = view.findViewById<EditText>(R.id.sinopsis)
         val ceritaBuku = view.findViewById<EditText>(R.id.cerita_buku)
         val hargaBuku = view.findViewById<EditText>(R.id.harga_buku)
 
-        // Disable save button initially
+        // Awalnya tombol save dinonaktifkan
         btnSaveAddBook.isEnabled = false
         btnSaveAddBook.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.grey))
 
-        // Set image selection click listener
+        // Menambahkan listener untuk memilih gambar
         btnSelectImage.setOnClickListener {
             selectImageFromGallery()
         }
 
-        // Text change listeners for all EditTexts
+        // Menambahkan listener perubahan teks pada semua EditText
         listOf(namaBuku, penulisBuku, sinopsis, ceritaBuku, hargaBuku).forEach { editText ->
             editText.addTextChangedListener {
                 isAllTextFilled = listOf(namaBuku, penulisBuku, sinopsis, ceritaBuku, hargaBuku)
-                    .all { it.text.isNotEmpty() }
+                    .all { it.text.isNotEmpty() } // Cek apakah semua input terisi
                 updateSaveButtonState()
             }
         }
 
-        // Save button action
+        // Aksi tombol save
         btnSaveAddBook.setOnClickListener {
             if (isImageSelected && isAllTextFilled) {
                 uploadImageToFirebaseStorage(
@@ -91,37 +102,36 @@ class AddBookFragment : Fragment() {
                     ceritaBuku.text.toString()
                 )
             } else {
-                Toast.makeText(requireContext(), "Please fill all fields and select an image.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Harap isi semua kolom dan pilih gambar.", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    // Method to enable image selection from gallery
+    // Metode untuk memilih gambar dari galeri
     private fun selectImageFromGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         startActivityForResult(intent, REQUEST_IMAGE_PICK)
     }
 
-    // Handle image selection result
+    // Menangani hasil dari pemilihan gambar
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_PICK && resultCode == Activity.RESULT_OK && data != null) {
             selectedImageUri = data.data
             if (selectedImageUri != null) {
                 imageView.setImageURI(selectedImageUri)
-                placeholderImage.visibility = View.GONE // Hide placeholder
-                imageView.visibility = View.VISIBLE // Show main image view
+                placeholderImage.visibility = View.GONE // Sembunyikan placeholder
+                imageView.visibility = View.VISIBLE // Tampilkan gambar utama
                 isImageSelected = true
                 updateSaveButtonState()
             }
         }
     }
 
-    // Method to upload image to Firebase Storage
+    // Metode untuk mengunggah gambar ke Firebase Storage
     private fun uploadImageToFirebaseStorage(judul: String, penulis: String, harga: Int, sinopsis: String, isi_cerita: String) {
         selectedImageUri?.let { uri ->
-            val imageRef = storage.child("${System.currentTimeMillis()}.jpg") // Create a unique file name
-
+            val imageRef = storage.child("${System.currentTimeMillis()}.jpg") // Nama file unik
             imageRef.putFile(uri)
                 .addOnSuccessListener {
                     imageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
@@ -129,39 +139,36 @@ class AddBookFragment : Fragment() {
                     }
                 }
                 .addOnFailureListener {
-                    Toast.makeText(requireContext(), "Image upload failed: ${it.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Gagal mengunggah gambar: ${it.message}", Toast.LENGTH_SHORT).show()
                 }
         }
     }
 
-    // Method to save book details to the database
-    // Method to save book details to the database
+    // Metode untuk menyimpan data buku ke Firebase Database
     private fun saveBookToDatabase(judul: String, penulis: String, harga: Int, cover: String, sinopsis: String, isi_cerita: String) {
-        val bookId = database.push().key ?: return // Generate unique ID
-        // Create the Book object with the correct types
+        val bookId = database.push().key ?: return // ID unik untuk buku
         val book = Book(
-            id = bookId, // Assuming you want to set the ID as well
+            id = bookId,
             judul = judul,
             penulis = penulis,
-            harga = harga, // This is an Int
-            cover = cover, // This is a String
+            harga = harga,
+            cover = cover,
             sinopsis = sinopsis,
             isi_cerita = isi_cerita
         )
 
-        // Save to the database
+        // Simpan data ke database
         database.child(bookId).setValue(book)
             .addOnSuccessListener {
-                Toast.makeText(requireContext(), "Book added successfully", Toast.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.action_addBookFragment_to_adminFragment) // Navigate back to the admin fragment
+                Toast.makeText(requireContext(), "Buku berhasil ditambahkan", Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.action_addBookFragment_to_adminFragment) // Navigasi ke halaman admin
             }
             .addOnFailureListener {
-                Toast.makeText(requireContext(), "Failed to add book: ${it.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Gagal menambahkan buku: ${it.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
-
-    // Check validation of both text and image
+    // Metode untuk memperbarui status tombol save
     private fun updateSaveButtonState() {
         val enableButton = isAllTextFilled && isImageSelected
         btnSaveAddBook.isEnabled = enableButton
@@ -170,6 +177,6 @@ class AddBookFragment : Fragment() {
     }
 
     companion object {
-        private const val REQUEST_IMAGE_PICK = 1
+        private const val REQUEST_IMAGE_PICK = 1 // Kode permintaan untuk memilih gambar
     }
 }
