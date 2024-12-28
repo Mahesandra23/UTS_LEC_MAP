@@ -34,8 +34,7 @@
 
 
 
-
-    <!-- Container for Add and Edit Book -->
+    <!-- Container for Add Edit Book, and managed purchased book -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -54,6 +53,22 @@
             android:drawableStart="@drawable/ic_add_book"
             android:drawablePadding="16dp"
             android:text="Tambah Buku"
+            android:textSize="23sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="50dp"
+            android:padding="60dp"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/purchased_book"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_background"
+            android:drawableStart="@drawable/baseline_playlist_add_check_circle_24"
+            android:drawablePadding="16dp"
+            android:text="Pembelian"
             android:textSize="23sp"
             android:textStyle="bold"
             android:layout_marginBottom="50dp"

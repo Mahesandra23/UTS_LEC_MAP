@@ -54,6 +54,14 @@ class AdminFragment : Fragment() {
             findNavController().navigate(R.id.action_adminFragment_to_loginFragment)
         }
 
+        // Menambahkan navigasi ke halaman Purchased Book
+        val purchasedBookTextView = view.findViewById<TextView>(R.id.purchased_book)
+        purchasedBookTextView.setOnClickListener {
+            // Navigasi ke halaman Purchased Book
+            findNavController().navigate(R.id.action_adminFragment_to_purchasedBookFragment)
+        }
+
+
         // Mengembalikan tampilan view fragment
         return view
     }
