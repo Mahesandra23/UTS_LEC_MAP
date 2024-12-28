@@ -4,14 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import android.widget.ImageView
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
-import com.google.android.gms.wallet.PaymentData
-import com.google.firebase.database.DatabaseReference
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.database.FirebaseDatabase
 import java.text.NumberFormat
 import java.util.*
@@ -19,6 +18,7 @@ import java.util.*
 class PurchasedBookFragment : Fragment() {
 
     private lateinit var userIdToNameMap: Map<String, String>
+    private lateinit var backButton: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,6 +27,14 @@ class PurchasedBookFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_purchased_book, container, false)
         val tableLayout = view.findViewById<TableLayout>(R.id.tableLayout)
         val totalIncomeTextView = view.findViewById<TextView>(R.id.total_income)
+        backButton = view.findViewById(R.id.iv_back_button) // Tambahkan inisialisasi tombol back
+
+        // Tambahkan listener untuk tombol back
+        backButton = view.findViewById<ImageView>(R.id.iv_back_button)
+        backButton.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
 
         val database = FirebaseDatabase.getInstance()
         val usersRef = database.getReference("users")

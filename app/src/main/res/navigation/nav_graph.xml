@@ -35,8 +35,10 @@
         android:id="@+id/purchasedBookFragment"
         android:name="com.example.uts_lec_map.PurchasedBookFragment"
         android:label="Purchased Book"
-        tools:layout="@layout/fragment_purchased_book" />
-
+        tools:layout="@layout/fragment_purchased_book" >
+        <action
+            android:id="@+id/action_purchasedBookFragment_to_adminFragment"/>
+    </fragment>
 
     <fragment
         android:id="@+id/listBookFragment"
