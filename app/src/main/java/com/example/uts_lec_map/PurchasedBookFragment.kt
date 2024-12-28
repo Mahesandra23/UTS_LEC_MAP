@@ -4,69 +4,132 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import com.google.android.gms.wallet.PaymentData
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import java.text.NumberFormat
 import java.util.*
 
 class PurchasedBookFragment : Fragment() {
 
+    private lateinit var userIdToNameMap: Map<String, String>
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_purchased_book, container, false)
-
-        // Referensi ke elemen layout
-        val tableLayout = view.findViewById<TableLayout>(R.id.purchased_books_table)
+        val tableLayout = view.findViewById<TableLayout>(R.id.tableLayout)
         val totalIncomeTextView = view.findViewById<TextView>(R.id.total_income)
 
         val database = FirebaseDatabase.getInstance()
-        val purchasedBooksRef = database.getReference("purchasedBooks")
+        val usersRef = database.getReference("users")
+        val paymentsRef = database.getReference("payments")
 
-        // Fetch data dari Firebase Realtime Database
-        purchasedBooksRef.get().addOnSuccessListener { dataSnapshot ->
-            var totalIncome = 0
-
-            dataSnapshot.children.forEach { child ->
-                val buyerName = child.child("buyer_name").getValue(String::class.java) ?: "N/A"
-                val buyerId = child.child("buyer_id").getValue(String::class.java) ?: "N/A"
-                val date = child.child("purchase_date").getValue(String::class.java) ?: "N/A"
-                val bookTitle = child.child("book_title").getValue(String::class.java) ?: "N/A"
-                val price = child.child("price").getValue(Int::class.java) ?: 0
-
-                totalIncome += price
-
-                // Tambahkan baris ke tabel
-                val row = TableRow(context).apply {
-                    addView(createTextView(buyerName))
-                    addView(createTextView(buyerId))
-                    addView(createTextView(date))
-                    addView(createTextView(bookTitle))
-                    addView(createTextView(formatPrice(price)))
-                }
-                tableLayout.addView(row)
+        usersRef.get().addOnSuccessListener { usersSnapshot ->
+            userIdToNameMap = usersSnapshot.children.associate { user ->
+                val userId = user.key ?: return@associate "" to "N/A"
+                val name = user.child("name").getValue(String::class.java) ?: "N/A"
+                userId to name
             }
 
-            // Set total penghasilan
-            totalIncomeTextView.text = "Total Penghasilan: ${formatPrice(totalIncome)}"
-        }.addOnFailureListener {
-            // Handle error saat fetch data
-            totalIncomeTextView.text = "Gagal memuat data pembelian."
+            paymentsRef.get().addOnSuccessListener { paymentsSnapshot ->
+                var totalIncome = 0
+
+                // Add header row
+                val headerRow = TableRow(context).apply {
+                    addView(createHeaderTextView("Nama Pembeli"))
+                    addView(createHeaderTextView("ID Pembeli"))
+                    addView(createHeaderTextView("Judul Buku"))
+                    addView(createHeaderTextView("Tanggal Pembelian"))
+                    addView(createHeaderTextView("Harga"))
+                }
+                tableLayout.addView(headerRow)
+
+                paymentsSnapshot.children.forEach { payment ->
+                    val paymentData = payment.value as? Map<*, *> ?: return@forEach
+
+                    val userId = paymentData["userId"] as? String ?: "N/A"
+                    val bookTitle = paymentData["judul"] as? String ?: "N/A"
+                    val price = (paymentData["harga"] as? Long)?.toInt() ?: 0
+                    val dateOfPurchase = paymentData["dateOfPurchase"] as? String ?: "N/A"
+
+                    totalIncome += price
+
+                    val buyerName = userIdToNameMap[userId] ?: "Tidak diketahui"
+
+                    val row = TableRow(context).apply {
+                        addView(createDataTextView(buyerName))
+                        addView(createDataTextView(userId))
+                        addView(createDataTextView(bookTitle))
+                        addView(createDataTextView(dateOfPurchase))
+                        addView(createDataTextView(formatPrice(price)))
+                    }
+
+                    // Set margin to ensure distance between rows
+                    val params = TableRow.LayoutParams().apply {
+                        topMargin = 4 // Margin untuk jarak antar baris
+                        bottomMargin = 4 // Margin untuk jarak antar baris
+                    }
+                    row.layoutParams = params
+
+                    tableLayout.addView(row)
+                }
+
+                totalIncomeTextView.text = "Total Penghasilan: ${formatPrice(totalIncome)}"
+            }
         }
 
         return view
     }
 
-    private fun createTextView(content: String): TextView {
+    private fun createHeaderTextView(content: String): TextView {
         return TextView(context).apply {
             text = content
-            setPadding(8, 8, 8, 8)
+            setPadding(16, 8, 16, 8)
             gravity = android.view.Gravity.CENTER
+            setTypeface(null, android.graphics.Typeface.BOLD)
+            background = resources.getDrawable(R.drawable.table_header_background, null)
+            typeface = ResourcesCompat.getFont(requireContext(), R.font.montserrat_bold)
         }
+    }
+
+    private fun createDataTextView(content: String): TextView {
+        return TextView(context).apply {
+            text = content
+            setPadding(8, 10, 8, 8) // Padding untuk jarak antar kolom
+            gravity = android.view.Gravity.CENTER
+            typeface = ResourcesCompat.getFont(requireContext(), R.font.montserrat_regular)
+        }
+    }
+
+    private fun addRowToTable(paymentData: Map<*, *>, tableLayout: TableLayout) {
+        val row = TableRow(context).apply {
+            // Margin antar baris
+            val params = TableRow.LayoutParams().apply {
+                topMargin = 20  // Menambahkan jarak atas antar baris
+                bottomMargin = 20 // Menambahkan jarak bawah antar baris
+            }
+            layoutParams = params
+
+            val userId = paymentData["userId"] as? String ?: "N/A"
+            val bookTitle = paymentData["judul"] as? String ?: "N/A"
+            val price = (paymentData["harga"] as? Long)?.toInt() ?: 0
+            val dateOfPurchase = paymentData["dateOfPurchase"] as? String ?: "N/A"
+
+            addView(createDataTextView(userId)) // Kolom 1
+            addView(createDataTextView(bookTitle)) // Kolom 2
+            addView(createDataTextView(formatPrice(price))) // Kolom 3
+            addView(createDataTextView(dateOfPurchase)) // Kolom 4
+        }
+
+        tableLayout.addView(row)
     }
 
     private fun formatPrice(price: Int): String {

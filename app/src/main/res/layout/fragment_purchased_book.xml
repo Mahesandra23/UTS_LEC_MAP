@@ -1,55 +1,30 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- ScrollView untuk scroll vertikal -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <TableLayout
-            android:id="@+id/purchased_books_table"
+        <!-- HorizontalScrollView untuk scroll horizontal -->
+        <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:stretchColumns="*"
-            android:shrinkColumns="*">
+            android:scrollbars="horizontal">
 
-            <!-- Header Row -->
-            <TableRow>
-                <TextView
-                    android:text="Nama Pembeli"
-                    android:textStyle="bold"
-                    android:padding="8dp"
-                    android:gravity="center" />
-
-                <TextView
-                    android:text="ID Pembeli"
-                    android:textStyle="bold"
-                    android:padding="8dp"
-                    android:gravity="center" />
-
-                <TextView
-                    android:text="Tanggal"
-                    android:textStyle="bold"
-                    android:padding="8dp"
-                    android:gravity="center" />
-
-                <TextView
-                    android:text="Judul Buku"
-                    android:textStyle="bold"
-                    android:padding="8dp"
-                    android:gravity="center" />
-
-                <TextView
-                    android:text="Harga"
-                    android:textStyle="bold"
-                    android:padding="8dp"
-                    android:gravity="center" />
-            </TableRow>
-        </TableLayout>
+            <!-- TableLayout untuk menampung data tabel -->
+            <TableLayout
+                android:id="@+id/tableLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:divider="@android:color/darker_gray"
+                android:showDividers="middle"
+                android:stretchColumns="0" /> <!-- Menonaktifkan stretchColumns -->
+        </HorizontalScrollView>
     </ScrollView>
 
     <!-- Total Penghasilan -->
@@ -59,7 +34,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Total Penghasilan: Rp 0"
-        android:textStyle="bold"
         android:padding="16dp"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:fontFamily="@font/montserrat_bold"/>
 </LinearLayout>
