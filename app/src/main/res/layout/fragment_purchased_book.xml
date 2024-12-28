@@ -1,0 +1,65 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TableLayout
+            android:id="@+id/purchased_books_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*"
+            android:shrinkColumns="*">
+
+            <!-- Header Row -->
+            <TableRow>
+                <TextView
+                    android:text="Nama Pembeli"
+                    android:textStyle="bold"
+                    android:padding="8dp"
+                    android:gravity="center" />
+
+                <TextView
+                    android:text="ID Pembeli"
+                    android:textStyle="bold"
+                    android:padding="8dp"
+                    android:gravity="center" />
+
+                <TextView
+                    android:text="Tanggal"
+                    android:textStyle="bold"
+                    android:padding="8dp"
+                    android:gravity="center" />
+
+                <TextView
+                    android:text="Judul Buku"
+                    android:textStyle="bold"
+                    android:padding="8dp"
+                    android:gravity="center" />
+
+                <TextView
+                    android:text="Harga"
+                    android:textStyle="bold"
+                    android:padding="8dp"
+                    android:gravity="center" />
+            </TableRow>
+        </TableLayout>
+    </ScrollView>
+
+    <!-- Total Penghasilan -->
+    <TextView
+        android:id="@+id/total_income"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Total Penghasilan: Rp 0"
+        android:textStyle="bold"
+        android:padding="16dp"
+        android:textSize="16sp" />
+</LinearLayout>

@@ -25,7 +25,18 @@
         <action
             android:id="@+id/action_adminFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+
+        <action
+            android:id="@+id/action_adminFragment_to_purchasedBookFragment"
+            app:destination="@id/purchasedBookFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/purchasedBookFragment"
+        android:name="com.example.uts_lec_map.PurchasedBookFragment"
+        android:label="Purchased Book"
+        tools:layout="@layout/fragment_purchased_book" />
+
 
     <fragment
         android:id="@+id/listBookFragment"
